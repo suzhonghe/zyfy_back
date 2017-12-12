@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace='com.zhongyang.java.dao.InvestRepaymentDao'>
+	<resultMap type="com.zhongyang.java.zyfyback.pojo.InvestRepayment" id="rm">
+		<id column="ID" property="id" />
+		<result column="CURRENTPERIOD" property="currentPeriod" />
+		<result column="REPAYAMOUNT" property="repayAmount" />
+		<result column="REPAYDATE" property="repayDate" />
+		<result column="STATUS" property="status" />
+		<result column="SOURCE_ID" property="sourceId" />
+		<result column="AMOUNTINTEREST" property="amountInterest" />
+		<result column="AMOUNTOUTSTANDING" property="amountOutStanding" />
+		<result column="AMOUNTPRINCIPAL" property="amountPrincipal" />
+		<result column="DUEDATE" property="dueDate" />
+		<result column="INVEST_ID" property="investId" />
+		<result column="USER_ID" property="userId"/>
+		<result column="AVAILABLE_AMOUNT" property="remarkAmount"/>
+		<result column="U_NAME" property="remark"/>
+		<result column="PLATCUST" property="platCust"/>
+	</resultMap>
+	<sql id="sqlfile">
+		CURRENTPERIOD,REPAYAMOUNT,REPAYDATE,STATUS,SOURCE_ID,AMOUNTINTEREST,AMOUNTOUTSTANDING,
+		AMOUNTPRINCIPAL,DUEDATE,INVEST_ID
+	</sql>
+
+	<insert id="insertInvestRepayment" parameterType="com.zhongyang.java.zyfyback.pojo.InvestRepayment">
+		INSERT INTO TB_INVEST_REPAYMENT (ID,CURRENTPERIOD,STATUS,AMOUNTINTEREST,
+		AMOUNTOUTSTANDING,AMOUNTPRINCIPAL,DUEDATE,INVEST_ID) 
+		VALUES (#{id},#{currentPeriod},#{status},#{amountInterest},#{amountOutStanding},
+		#{amountPrincipal},#{dueDate},#{investId})
+	</insert>
+
+    <update id="updateInvestRepaymentByParams" parameterType="com.zhongyang.java.zyfyback.pojo.InvestRepayment">
+        update TB_INVEST_REPAYMENT 
+			<set>
+				<if test="repayAmount !=null">REPAYAMOUNT=#{repayAmount},</if>
+				<if test="repayDate !=null">REPAYDATE=#{repayDate},</if>
+				<if test="status !=null">STATUS=#{status},</if>
+				<if test="sourceId !=null">SOURCE_ID=#{sourceId},</if>
+				<if test="amountInterest !=null">AMOUNTINTEREST=#{amountInterest},</if>
+				<if test="amountOutStanding !=null">AMOUNTOUTSTANDING=#{amountOutStanding},</if>
+				<if test="amountPrincipal !=null">AMOUNTPRINCIPAL=#{amountPrincipal},</if>
+			</set>
+			<if test="id !=null or investId!=null or currentPeriod">
+				 where 1=1
+	        	<if test="id !=null">and ID =#{id}</if>
+	        	<if test="currentPeriod !=null">and CURRENTPERIOD=#{currentPeriod}</if>
+	        	<if test="investId !=null">and INVEST_ID=#{investId}</if>
+			</if>
+       
+    </update>
+    <select id="selectInvestRepaymentByParams" parameterType="com.zhongyang.java.zyfyback.pojo.InvestRepayment" resultMap="rm">
+    	select ID,<include refid="sqlfile"/>
+    	from TB_INVEST_REPAYMENT where 1=1
+    	<if test="investId !=null">and INVEST_ID=#{investId}</if>
+    	<if test="status !=null">and STATUS=#{status}</if>
+    </select>
+    
+    <insert id="batchInsertInvestRepayment" parameterType="java.util.List">
+    	INSERT INTO TB_INVEST_REPAYMENT (ID,CURRENTPERIOD,STATUS,AMOUNTINTEREST,
+		AMOUNTOUTSTANDING,AMOUNTPRINCIPAL,DUEDATE,INVEST_ID)VALUES
+    	<foreach collection="list" item="item" index="index" separator=",">
+			(#{item.id},#{item.currentPeriod},#{item.status},#{item.amountInterest},
+			#{item.amountOutStanding},#{item.amountPrincipal},#{item.dueDate},#{item.investId})
+  		</foreach>
+    </insert>
+    
+    <!-- 标的还款计划对应的回款计划 -->
+    <select id="selectByLoanRepayment" parameterType="com.zhongyang.java.zyfyback.pojo.LoanRepayment" resultMap="rm">
+    	select r.ID,r.CURRENTPERIOD,r.REPAYAMOUNT,r.REPAYDATE,r.STATUS,r.SOURCE_ID,r.AMOUNTINTEREST,
+    	r.AMOUNTOUTSTANDING,r.AMOUNTPRINCIPAL,r.DUEDATE,r.INVEST_ID,i.USERID,f.AVAILABLE_AMOUNT,u.U_NAME,acc.PLATCUST
+    	from TB_INVEST_REPAYMENT r 
+    	left join TB_INVEST i on r.INVEST_ID=i.ID
+    	left join TB_USER_FUND f on i.USERID=f.USER_ID
+    	left join TB_USER u on i.USERID=u.ID
+    	left join TB_BM_ACCOUNT acc on acc.USER_ID=u.ID
+    	where i.LOANID=#{loanId} and r.CURRENTPERIOD=#{currentPeriod}
+    	and i.STATUS='SETTLED'
+    </select>
+    
+    <update id="batchUpdateInvestRepayment" parameterType="java.util.List">
+    	<foreach collection="list" index="index" item="item" open="" separator=";" close="">
+	    	update TB_INVEST_REPAYMENT 
+	    		<set>
+		    		<if test="item.status !=null">STATUS=#{item.status},</if>
+		    		<if test="item.repayAmount !=null">REPAYAMOUNT=#{item.repayAmount},</if>
+		    		<if test="item.repayDate !=null">REPAYDATE=#{item.repayDate},</if>
+		    		<if test="item.sourceId !=null">SOURCE_ID=#{item.sourceId},</if>
+	    		</set>
+	    	 where INVEST_ID=#{item.investId} 
+	    	 and CURRENTPERIOD =#{item.currentPeriod}
+    	</foreach>
+    </update>
+    
+ </mapper>

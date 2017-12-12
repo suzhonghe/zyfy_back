@@ -1,0 +1,301 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace='com.zhongyang.java.dao.LoanDao'>
+	<resultMap type="com.zhongyang.java.zyfyback.pojo.Loan" id="rm">
+		<id column="ID" property="id"/>
+		<result column="SERIAL" property="serial"/>
+		<result column="AMOUNT" property="amount"/>
+		<result column="BID_AMOUNT" property="bidAmount"/>
+		<result column="BID_NUMBER" property="bidNumber"/>
+		<result column="METHOD" property="method"/>
+		<result column="RATE" property="rate"/>
+		<result column="ADDRATE" property="addRate"/>
+		<result column="L_STATUS" property="status"/>
+		<result column="TIMESUBMIT" property="timeSubmit"/>
+		<result column="TIMECLEARED" property="timeCleared"/>
+		<result column="TIMEFAILED" property="timeFailed"/>
+		<result column="TIMECANCLE" property="timeCancle"/>
+		<result column="TIMEFINISHED" property="timeFinished"/>
+		<result column="TIMEOPEN" property="timeOpen"/>
+		<result column="TIMESETTLED" property="timeSettled"/>
+		<result column="TITLE" property="title"/>
+		<result column="DAYS" property="days"/>
+		<result column="MONTHS" property="months"/>
+		<result column="YEARS" property="years"/>
+		<result column="LOANUSERID" property="loanUserId"/>
+		<result column="GUARANTEE_ID" property="guaranteeId"/>
+		<result column="GUARANTEE_REALM" property="guaranteeRealm"/>
+		<result column="PRODUCTID" property="productId"/>
+		<result column="PRODUCTNAME" property="productName"/>
+		<result column="GROUPID" property="groupId"/>
+		<result column="MINAMOUNT" property="minAmount"/>
+		<result column="STEPAMOUNT" property="stepAmount"/>
+		<result column="MAXAMOUNT" property="maxAmount"/>
+		<result column="LOANSERVICEFEE" property="loanServiceFee"/>
+		<result column="LOANGUARANTEEFEE" property="loanGuaranteeFee"/>
+		<result column="LOANRISKFEE" property="loanRiskFee"/>
+		<result column="LOANMANAGEFEE" property="loanManageFee"/>
+		<result column="LOANINTERESTFEE" property="loanInterestFee"/>
+		<result column="INVESTINTERESTFEE" property="investInterestFee"/>
+		<result column="PROJECTID" property="projectId"/>
+		<result column="OTHER" property="other"/>
+		<result column="TIMESCHEDULED" property="timeScheduled"/>
+		<result column="LEGALPERSON" property="legalPerson"/>
+		<result column="AGENTPERSON" property="agentPerson"/>
+		<result column="U_NAME" property="loanUserName"/>
+		<result column="REASON" property="reason"/>
+		<result column="TENDERAMOUNT" property="tenderAmount"/>
+		<result column="COMENTSATEUSERID" property="comentSateUserId"/>
+	</resultMap>
+
+
+	<sql id="sqlfield">
+		SERIAL,BID_AMOUNT,BID_NUMBER,METHOD,RATE,ADDRATE,L_STATUS,REASON,
+		TIMESUBMIT,TIMECANCLE,TIMECLEARED,TIMEFINISHED,TIMEOPEN,TIMEFAILED,TIMESETTLED,
+		TITLE,DAYS,MONTHS,YEARS,LOANUSERID,GUARANTEE_ID,GUARANTEE_REALM,PRODUCTID,
+		PRODUCTNAME,GROUPID,MINAMOUNT,STEPAMOUNT,MAXAMOUNT,LOANSERVICEFEE,LOANGUARANTEEFEE,
+		LOANRISKFEE,LOANMANAGEFEE,LOANINTERESTFEE,INVESTINTERESTFEE,PROJECTID,OTHER,TIMESCHEDULED,COMENTSATEUSERID	  
+	</sql>
+	
+	<insert id="insertLoan" parameterType="com.zhongyang.java.zyfyback.pojo.Loan">
+		insert into TB_LOAN(ID,SERIAL,AMOUNT,BID_AMOUNT,BID_NUMBER,METHOD,RATE,ADDRATE,
+		L_STATUS,TIMESUBMIT,TITLE,DAYS,MONTHS,YEARS,LOANUSERID,GUARANTEE_ID,GUARANTEE_REALM,
+		PRODUCTID,PRODUCTNAME,GROUPID,MINAMOUNT,STEPAMOUNT,MAXAMOUNT,LOANSERVICEFEE,LOANGUARANTEEFEE,
+		LOANRISKFEE,LOANMANAGEFEE,LOANINTERESTFEE,INVESTINTERESTFEE,PROJECTID,COMENTSATEUSERID)values(#{id},
+		#{serial},#{amount},#{bidAmount},#{bidNumber},#{method},#{rate},#{addRate},#{status},
+		#{timeSubmit},#{title},#{days},#{months},#{years},#{loanUserId},#{guaranteeId},#{guaranteeRealm},
+		#{productId},#{productName},#{groupId},#{minAmount},#{stepAmount},#{maxAmount},
+		#{loanServiceFee},#{loanGuaranteeFee},#{loanRiskFee},#{loanManageFee},#{loanInterestFee},
+		#{investInterestFee},#{projectId},#{comentSateUserId})
+	</insert> 
+	
+	<update id="updateLoanByParams" parameterType="com.zhongyang.java.zyfyback.pojo.Loan">
+		update TB_LOAN
+			<set>
+				<if test="serial!=null">SERIAL=#{serial},</if>
+				<if test="amount!=null">AMOUNT=#{amount},</if>
+				<if test="bidAmount!=null">BID_AMOUNT=#{bidAmount},</if>
+				<if test="bidNumber!=null">BID_NUMBER=#{bidNumber},</if>
+				<if test="method!=null">METHOD=#{method},</if>
+				<if test="rate!=null">RATE=#{rate},</if>
+				<if test="addRate!=null">ADDRATE=#{addRate},</if>
+				<if test="status!=null">L_STATUS=#{status},</if>
+				<if test="timeCleared!=null">TIMECLEARED=#{timeCleared},</if>
+				<if test="timeCancle!=null">TIMECANCLE=#{timeCancle},</if>
+				<if test="timeFinished!=null">TIMEFINISHED=#{timeFinished},</if>
+				<if test="timeOpen!=null">TIMEOPEN=#{timeOpen},</if>
+				<if test="timeSettled!=null">TIMESETTLED=#{timeSettled},</if>
+				<if test="timeFailed!=null">TIMEFAILED=#{timeFailed},</if>
+				<if test="timeScheduled!=null">TIMESCHEDULED=#{timeScheduled},</if>
+				<if test="title!=null">TITLE=#{title},</if>
+				<if test="days!=null">DAYS=#{days},</if>
+				<if test="months!=null">MONTHS=#{months},</if>
+				<if test="years!=null">YEARS=#{years},</if>
+				<if test="groupId!=null">GROUPID=#{groupId},</if>
+				<if test="minAmount!=null">MINAMOUNT=#{minAmount},</if>
+				<if test="stepAmount!=null">STEPAMOUNT=#{stepAmount},</if>
+				<if test="maxAmount!=null">MAXAMOUNT=#{maxAmount},</if>
+				<if test="loanServiceFee!=null">LOANSERVICEFEE=#{loanServiceFee},</if>
+				<if test="loanGuaranteeFee!=null">LOANGUARANTEEFEE=#{loanGuaranteeFee},</if>
+				<if test="loanRiskFee!=null">LOANRISKFEE=#{loanRiskFee},</if>
+				<if test="loanManageFee!=null">LOANMANAGEFEE=#{loanManageFee},</if>
+				<if test="loanInterestFee!=null">LOANINTERESTFEE=#{loanInterestFee},</if>
+				<if test="investInterestFee!=null">INVESTINTERESTFEE=#{investInterestFee},</if>
+				<if test="other!=null">OTHER=#{other},</if>
+				<if test="reason!=null">REASON=#{reason},</if>
+				<if test="comentSateUserId !=null">COMENTSATEUSERID=#{comentSateUserId},</if>
+			</set>
+			<if test="id!=null">
+				where 1=1
+				<if test="id!=null">and ID=#{id}</if>
+			</if>
+		
+	</update>
+	
+	<select id="selectLoanByParams" parameterType="com.zhongyang.java.zyfyback.pojo.Loan" resultMap="rm">
+		select l.ID,u.U_NAME,AMOUNT,
+			<include refid="sqlfield"/>
+		from TB_LOAN l left join TB_USER u on l.LOANUSERID=u.ID where 1=1
+			<if test="projectId!=null">and l.PROJECTID=#{projectId}</if>
+			<if test="status!=null">and l.L_STATUS=#{status}</if>
+			<if test="id !=null">and l.ID=#{id}</if>
+			<if test="loanUserId !=null">and l.LOANUSERID=#{loanUserId}</if>
+		order by l.TIMESUBMIT DESC
+	</select>
+	<select id="selectLoanByPage" parameterType="com.zhongyang.java.system.page.Page" resultMap="rm">
+	 	select
+	 	l.ID,u.U_NAME,t.AMOUNT TENDERAMOUNT,l.AMOUNT,
+	 	<include refid="sqlfield"/>
+	 	from TB_LOAN l left join TB_USER u on l.LOANUSERID=u.ID 
+	 	left join TB_LOAN_TENDER t on l.ID=t.LOAN_ID
+	 	where 1=1
+	 		<if test="params.containsKey('productId') and params.productId !=''">and PRODUCTID=#{params.productId}</if>
+	 		<if test="params.containsKey('guaranteeId') and params.guaranteeId !=''">and GUARANTEE_ID=#{params.guaranteeId}</if>
+	 		<if test="params.containsKey('title') and params.title !=''">and TITLE like '%${params.title}%'</if>
+			<if test="params.containsKey('status') and params.status!='all'">and L_STATUS=#{params.status}</if>
+			<choose>
+				<when test="params.status=='INITIATED'">
+					<if test="startTime!=null">and TIMESUBMIT &gt;=#{startTime}</if>
+					<if test="endTime!=null">and TIMESUBMIT &lt;=#{endTime}</if>
+				order by TIMESUBMIT DESC
+				</when>
+				<when test="params.status=='UNPLANED'">
+					<if test="startTime!=null">and TIMESCHEDULED &gt;=#{startTime}</if>
+					<if test="endTime!=null">and TIMESCHEDULED &lt;=#{endTime}</if>
+					order by TIMESCHEDULED DESC
+				</when>
+				<when test="params.status=='SCHEDULED' or params.status=='OPENED'">
+					<if test="startTime!=null">and TIMEOPEN &gt;=#{startTime}</if>
+					<if test="endTime!=null">and TIMEOPEN &lt;=#{endTime}</if>
+					order by TIMEOPEN DESC
+				</when>
+				<when test="params.status=='FINISHED'">
+					<if test="startTime!=null">and TIMEFINISHED &gt;=#{startTime}</if>
+					<if test="endTime!=null">and TIMEFINISHED &lt;=#{endTime}</if>
+					order by TIMEFINISHED DESC
+				</when>
+				<when test="params.status=='SETTLED'">
+					<if test="startTime!=null">and TIMESETTLED &gt;=#{startTime}</if>
+					<if test="endTime!=null">and TIMESETTLED &lt;=#{endTime}</if>
+					order by TIMESETTLED DESC
+				</when>
+				<when test="params.status=='CLEARED'">
+					<if test="startTime!=null">and TIMECLEARED &gt;=#{startTime}</if>
+					<if test="endTime!=null">and TIMECLEARED &lt;=#{endTime}</if>
+					order by TIMECLEARED DESC
+				</when>
+				<when test="params.status=='CANCELED'">
+					<if test="startTime!=null">and TIMECANCLE &gt;=#{startTime}</if>
+					<if test="endTime!=null">and TIMECANCLE &lt;=#{endTime}</if>
+					order by TIMECANCLE DESC
+				</when>
+				<when test="params.status=='FAILED'">
+					<if test="startTime!=null">and TIMEFAILED &gt;=#{startTime}</if>
+					<if test="endTime!=null">and TIMEFAILED &lt;=#{endTime}</if>
+					order by TIMEFAILED DESC
+				</when>
+			</choose>
+			<if test="params.containsKey('status') and params.status=='all'">
+				and L_STATUS in('FINISHED','SETTLED','CLEARED','OPENED') 
+					<if test="startTime!=null">and TIMEOPEN &gt;=#{startTime}</if>
+					<if test="endTime!=null">and TIMEOPEN &lt;=#{endTime}</if>
+				order by TIMEOPEN DESC
+			</if>
+	</select>
+
+	<select id="selectResult" parameterType="java.util.Map" resultType="java.math.BigDecimal">
+		select sum(AMOUNT) totalAmount from TB_LOAN where 1=1
+		
+			<if test="_parameter.containsKey('status') and status!='all'">
+				and L_STATUS=#{status}
+			</if>
+			<if test="_parameter.containsKey('status') and status =='all'">
+				and L_STATUS in ('OPENED','FINISHED','SETTLED','CLEARED')
+			</if>
+			<if test="_parameter.containsKey('productId') and productId !=''">
+				and PRODUCTID=#{productId}
+			</if>
+			<if test="_parameter.containsKey('guaranteeId') and guaranteeId !=''">
+				and GUARANTEE_ID=#{guaranteeId}
+			</if>
+	 		<if test="_parameter.containsKey('title') and title !=''">
+	 			and TITLE like '%${title}%'
+	 		</if>
+			<if test="status=='all' or status=='OPENED'">
+				<if test="startTime !=null">
+					and TIMEOPEN &gt;=#{startTime}
+				</if>
+				<if test="endTime !=null">
+					and TIMEOPEN &lt;=#{endTime}
+				</if>
+			</if>
+			<if test="status=='FINISHED'">
+				<if test="startTime !=null">
+					and TIMEFINISHED &gt;=#{startTime}
+				</if>
+				<if test="endTime !=null">
+					and TIMEFINISHED &lt;=#{endTime}
+				</if>
+			</if>
+			<if test="status=='SETTLED'">
+				<if test="startTime !=null">
+					and TIMESETTLED &gt;=#{startTime}
+				</if>
+				<if test="endTime !=null">
+					and TIMESETTLED &lt;=#{endTime}
+				</if>
+			</if>
+			<if test="status=='CLEARED'">
+				<if test="startTime !=null">
+					and TIMECLEARED &gt;=#{startTime}
+				</if>
+				<if test="endTime !=null">
+					and TIMECLEARED &lt;=#{endTime}
+				</if>
+			</if>
+			
+	</select>
+
+	<select id="selectLoanCount" parameterType="String" resultType="int">
+		select count(*) from TB_LOAN where LOANUSERID=#{loanUserId}
+	</select>
+	
+	<resultMap type="com.zhongyang.java.zyfyback.vo.LoanListVo" id="loanPage">
+		<id column="ID" property="id"/>
+		<result column="LOANUSERID" property="loanUserId"/>
+		<result column="AMOUNT" property="amount"/>
+		<result column="BID_AMOUNT" property="bidAmount"/>
+		<result column="METHOD" property="method"/>
+		<result column="TITLE" property="title"/>
+		<result column="MONTHS" property="months"/>
+		<result column="L_STATUS" property="status"/>
+		<result column="RATE" property="rate"/>
+		<result column="ADDRATE" property="addRate"/>
+		<result column="TIMEOPEN" property="timeOpen"/>
+	</resultMap>
+	
+	<select id="selectLoanRecordByPage" parameterType="com.zhongyang.java.system.page.Page" resultMap="loanPage">
+		select ID,LOANUSERID,AMOUNT,BID_AMOUNT,METHOD,TITLE,MONTHS,L_STATUS,RATE,ADDRATE,
+		TIMEOPEN from TB_LOAN
+		where 1=1
+		<if test="params.containsKey('userId') and params.userId !=''">
+			and LOANUSERID=#{params.userId}
+		</if>
+		and L_STATUS in('FINISHED','OPENED','CLEARED','SETTLED','ARCHIVED')
+		order by TIMEOPEN DESC
+	</select>
+	
+	<select id="selectLoanAmount" parameterType="java.util.Date" resultType="com.zhongyang.java.zyfyback.returndata.ManagerData">
+		SELECT SUM(r.AMOUNTPRINCIPAL)/10000 loanAmount,SUM(AMOUNTINTEREST)/10000 feeAmount FROM TB_LOAN_REPAYMENT r left join
+		TB_LOAN l on l.ID=r.LOAN_ID WHERE r.DUEDATE &gt;DATE_FORMAT(#{date},'%Y-%m-%d') and l.TIMESETTLED &lt;#{date} AND r.`STATUS`='UNDUE'
+	</select>
+	
+	<select id="selectLoanPerson" parameterType="java.util.Date" resultType="Integer"> 
+		SELECT COUNT(DISTINCT l.LOANUSERID) FROM TB_LOAN l left join TB_LOAN_REPAYMENT r
+		on l.ID=r.LOAN_ID WHERE l.L_STATUS='SETTLED' and l.TIMESETTLED &lt;=#{date} and r.DUEDATE &gt;#{date}
+		and r.STATUS='UNDUE'
+	</select>
+	
+	<select id="selectInPerson" parameterType="java.util.Date" resultType="Integer">
+		SELECT COUNT(DISTINCT i.USERID) FROM TB_INVEST i LEFT JOIN TB_INVEST_REPAYMENT r 
+		ON i.ID=r.INVEST_ID WHERE r.DUEDATE &gt;DATE_FORMAT(#{date},'%Y-%m-%d')AND r.`STATUS`='UNDUE' 
+		AND i.SUBMITTIME &lt;=#{date} AND i.`STATUS`='SETTLED'
+	</select>
+	
+	<select id="selectLimitDays" parameterType="java.util.Date" resultType="Integer">
+		SELECT SUM(t.MONTHS*30) FROM (SELECT MONTHS FROM TB_LOAN  WHERE L_STATUS='SETTLED' and TIMESETTLED &lt;=#{date} GROUP BY PROJECTID)t
+	</select>
+	
+	<select id="selectRate" parameterType="java.util.Date" resultType="Double">
+		SELECT sum(AMOUNT*RATE)/SUM(AMOUNT)  FROM TB_LOAN WHERE L_STATUS='SETTLED' and TIMESETTLED &lt;=#{date}
+	</select>
+	
+	<select id="selectAmountByDate" resultType="com.zhongyang.java.zyfyback.returndata.ManagerData">
+		SELECT SUM(r.AMOUNTPRINCIPAL)/10000 dateAmount,SUM(r.AMOUNTINTEREST)/10000 dateAmountFee 
+			FROM TB_LOAN l LEFT JOIN TB_LOAN_REPAYMENT r ON l.ID = r.LOAN_ID
+		WHERE
+			l.TIMESETTLED &lt;= #{0}
+			AND r.DUEDATE &gt;= #{1}
+			AND r.DUEDATE &lt;= #{2}
+	</select>
+</mapper>

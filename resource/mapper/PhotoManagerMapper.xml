@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace='com.zhongyang.java.dao.PhotoManagerDao'>
+	<resultMap type="com.zhongyang.java.zyfyback.pojo.PhotoManager" id="rm">
+		<id column="ID" property="id"/>
+		<result column="PHOTONAME" property="photoName"/>
+		<result column="PATHADDRESS" property="pathAddress"/>
+		<result column="JUMPADDRESS" property="jumpAddress"/>
+		<result column="TIME" property="time"/>
+		<result column="TYPE" property="type"/>
+		<result column="WHETHERSHOW" property="whetherShow"/>
+		<result column="SERIALNUMBER" property="serialNumber"/>
+		<result column="TITLE" property="title"/>
+	</resultMap>
+	<sql id="sqlfile">
+		select ID id,PHOTONAME photoName,PATHADDRESS pathAddress,JUMPADDRESS jumpAddress,TIME time,TYPE type,WHETHERSHOW whetherShow,SERIALNUMBER serialNumber,TITLE title
+			from TB_PHOTO_MANAGER where 1=1
+	</sql>
+	<insert id="insertPhoto" parameterType="com.zhongyang.java.zyfyback.pojo.PhotoManager">
+		insert into TB_PHOTO_MANAGER (ID,PHOTONAME,PATHADDRESS,JUMPADDRESS,TIME,TYPE,WHETHERSHOW,SERIALNUMBER,TITLE) values (#{id},#{photoName},#{pathAddress},#{jumpAddress},#{time},#{type},#{whetherShow},#{serialNumber},#{title})
+	</insert>
+	<select id="selectByParams" parameterType="com.zhongyang.java.zyfyback.pojo.PhotoManager" resultMap="rm">
+		<include refid="sqlfile"/>
+			<if test="id!=null">
+				and ID=#{id}
+			</if>
+			<if test="pathAddress!=null">
+				and PATHADDRESS=#{pathAddress}
+			</if>
+			<if test="type!=null">
+				and TYPE=#{type}
+			</if>
+			<if test="whetherShow!=null">
+				and WHETHERSHOW=#{whetherShow}
+			</if>
+			order by SERIALNUMBER asc,TIME desc
+	</select>
+	<delete id="deleteByParams" parameterType="com.zhongyang.java.zyfyback.pojo.PhotoManager">
+		delete from TB_PHOTO_MANAGER where PATHADDRESS=#{pathAddress}
+	</delete>
+	<update id="batchUpdatePhotos" parameterType="java.util.List">
+		<foreach collection="list" item="photo" index="index" separator=";">  
+			update TB_PHOTO_MANAGER   
+				<set>
+					<if test="photo.serialNumber!=null">SERIALNUMBER=#{photo.serialNumber},</if> 
+					<if test="photo.title!=null">TITLE=#{photo.title},</if>
+					<if test="photo.whetherShow!=null">WHETHERSHOW=#{photo.whetherShow},</if>
+					<if test="photo.jumpAddress!=null">JUMPADDRESS=#{photo.jumpAddress},</if> 
+				</set>  
+			where 1=1
+				<if test="photo.id!=null">and ID = #{photo.id}</if>
+				<if test="photo.pathAddress!=null">and PATHADDRESS = #{photo.pathAddress}</if>  
+    	</foreach> 
+	</update>
+	<update id="updateByParams" parameterType="com.zhongyang.java.zyfyback.pojo.PhotoManager">
+		update TB_PHOTO_MANAGER   
+			<set>
+				<if test="title!=null">TITLE=#{title},</if>
+				<if test="jumpAddress!=null">JUMPADDRESS=#{jumpAddress},</if> 
+			</set>  
+		where 1=1
+			<if test="id!=null">and ID = #{id}</if>
+			<if test="pathAddress!=null">and PATHADDRESS = #{pathAddress}</if>
+	</update>
+</mapper>

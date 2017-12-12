@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zhongyang.java.dao.SysAuthoritiesDao">
+	<resultMap id="BaseResultMap"
+		type="com.zhongyang.java.zyfyback.pojo.SysAuthorities">
+		<id column="SYS_PRIVILIGE" property="sysPrivilige" />
+		<result column="PRI_NAME" property="priName" />
+		<result column="PRI_PINDEX" property="priPindex" />
+		<result column="PRI_TYPE" property="priType" />
+	</resultMap>
+	<sql id="sqlfile">
+		select SYS_PRIVILIGE sysPrivilige, PRI_NAME priName, PRI_PINDEX priPindex, PRI_TYPE priType from TB_AUTHORITIES where 1=1
+	</sql>
+	<select id="selectAllSysAuthorities" resultMap="BaseResultMap">
+		<include refid="sqlfile"/>
+	</select>
+</mapper>

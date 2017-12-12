@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace='com.zhongyang.java.dao.FundRecordDao'>
+	<resultMap type="com.zhongyang.java.zyfyback.pojo.FundRecord" id="rm">
+		<id column="ID" property="id"/>
+		<result column="AMOUNT" property="amount"/>
+		<result column="AVIAMOUNT" property="aviAmount"/>
+		<result column="DESCRIPTION" property="description"/>
+		<result column="OPERATION" property="operation"/>
+		<result column="ORDERID" property="orderId"/>
+		<result column="STATUS" property="status"/>
+		<result column="TIMERECORDED" property="timeRecorded"/>
+		<result column="TYPE" property="type"/>
+		<result column="USER_ID" property="userId"/>
+		<result column="PAY_ORDER_NO" property="payOrderNo"/>
+		<result column="PAY_FINISH_DATE" property="payFinishDate"/>
+		<result column="PAY_FINISH_TIME" property="payFinishTime"/>
+		<result column="PAY_ORDER_STATUS" property="payOrderStatus"/>
+		<result column="PAY_AMT" property="payAmt"/>
+		<result column="ERROR_INFO" property="errorInfo"/>
+		<result column="ERROR_NO" property="errorNo"/>
+		<result column="HOST_REQ_SERIAL_NO" property="hostReqSerialNo"/>
+	</resultMap>
+    <sql id="sqlfile">
+    	ID,AMOUNT,AVIAMOUNT,DESCRIPTION,OPERATION,ORDERID,STATUS,TIMERECORDED,TYPE,
+    	USER_ID,PAY_ORDER_NO,PAY_FINISH_DATE,PAY_FINISH_TIME,PAY_ORDER_STATUS,PAY_AMT,
+    	ERROR_INFO,ERROR_NO,HOST_REQ_SERIAL_NO
+    </sql>
+    
+    
+	<insert id="insertFundRecord" parameterType="com.zhongyang.java.zyfyback.pojo.FundRecord">
+		INSERT INTO TB_FUND_RECORD (ID,AMOUNT,AVIAMOUNT,DESCRIPTION,OPERATION,ORDERID,
+		STATUS,TIMERECORDED,TYPE,USER_ID) 
+		VALUES (#{id},#{amount},#{aviAmount},#{description},#{operation},#{orderId},
+		#{status},#{timeRecorded},#{type},#{userId})
+	</insert>
+	
+	<update id="updateFundRecordByParams" parameterType="com.zhongyang.java.zyfyback.pojo.FundRecord">  
+	    update TB_FUND_RECORD 
+			<set>
+		      <if test="status != null">
+		          STATUS = #{status},
+		      </if>
+		      <if test="aviAmount != null">
+		          AVIAMOUNT = #{aviAmount},
+		      </if>
+		       <if test="payOrderNo != null">
+		          PAY_ORDER_NO = #{payOrderNo},
+		      </if>
+		       <if test="payFinishDate != null">
+		          PAY_FINISH_DATE = #{payFinishDate},
+		      </if>
+		       <if test="payFinishTime != null">
+		          PAY_FINISH_TIME = #{payFinishTime},
+		      </if>
+		       <if test="payOrderStatus!= null">
+		          PAY_ORDER_STATUS = #{payOrderStatus},
+		      </if>
+		       <if test="payAmt!= null">
+		          PAY_AMT = #{payAmt},
+		      </if>
+		       <if test="errorInfo != null">
+		          ERROR_INFO = #{errorInfo},
+		      </if>
+		       <if test="errorNo != null">
+		          ERROR_NO = #{errorNo},
+		      </if>
+		      <if test="hostReqSerialNo != null">
+		          HOST_REQ_SERIAL_NO = #{hostReqSerialNo},
+		      </if>
+		    </set>
+		    <if test="orderId !=null or type !=null">
+		    	where 1=1
+		    	<if test="orderId !=null">and ORDERID = #{orderId}</if>
+		    	<if test="type !=null">and TYPE =#{type}</if>
+		    
+		    </if>
+	    
+    </update>
+
+    <select id="selectFundRecordByParams"  parameterType="com.zhongyang.java.zyfyback.pojo.FundRecord" resultMap="rm">
+		select
+			<include refid="sqlfile"/>
+		from TB_FUND_RECORD where 1=1
+		<if test="orderId != null"> and  ORDERID = #{orderId}</if>
+		<if test="type !=null">and TYPE =#{type}</if>
+	</select>
+		
+	<insert id="batchInsertFundRecord" parameterType="java.util.List">
+		insert into TB_FUND_RECORD(ID,AMOUNT,AVIAMOUNT,DESCRIPTION,OPERATION,ORDERID,
+		STATUS,TIMERECORDED,TYPE,USER_ID) values
+		<foreach collection="list" item="item" index="index" separator=",">
+			(#{item.id},#{item.amount},#{item.aviAmount},#{item.description},#{item.operation},
+			#{item.orderId},#{item.status},#{item.timeRecorded},#{item.type},#{item.userId})
+  		</foreach>
+	</insert>
+	
+	<resultMap type="com.zhongyang.java.zyfyback.pojo.FundRecord" id="pageRm">
+		<id column="ID" property="id"/>
+		<result column="AMOUNT" property="amount"/>
+		<result column="DESCRIPTION" property="description"/>
+		<result column="OPERATION" property="operation"/>
+		<result column="ORDERID" property="orderId"/>
+		<result column="STATUS" property="status"/>
+		<result column="TIMERECORDED" property="timeRecorded"/>
+		<result column="STRTIMERECORDED" property="strTimeRecorded"/>
+		<result column="TYPE" property="type"/>
+		<result column="USER_ID" property="userId"/>
+		<result column="U_NAME" property="userName"/>
+		<result column="MOBILE" property="mobile"/>
+	</resultMap>
+	
+	<select id="selectFundRecordByPage" parameterType="com.zhongyang.java.system.page.Page" resultMap="pageRm">
+		select ID,AMOUNT,DESCRIPTION,OPERATION,ORDERID,STATUS,DATE_FORMAT(TIMERECORDED,'%Y-%m-%d %H:%i:%s') STRTIMERECORDED,
+			TYPE,USER_ID
+		from TB_FUND_RECORD where 1=1
+		<if test="params.containsKey('userId') and params.userId!=''">
+			and USER_ID=#{params.userId}
+		</if>
+		<if test="params.containsKey('type') and params.type !=''">
+			and TYPE=#{params.type}
+		</if>
+		<if test="params.containsKey('status') and params.status !=''">
+			and STATUS=#{params.status}
+		</if>
+		<if test="startTime !=null">
+			and TIMERECORDED &gt;=#{startTime}
+		</if>
+		<if test="endTime !=null">
+			and TIMERECORDED &lt;=#{endTime}
+		</if>
+		order by 
+		TIMERECORDED DESC
+	</select>
+	
+	<select id="selectPersonFundRecordByPage" parameterType="com.zhongyang.java.system.page.Page" resultMap="pageRm">
+		select f.ID,f.AMOUNT,f.DESCRIPTION,f.OPERATION,f.ORDERID,f.STATUS,DATE_FORMAT(f.TIMERECORDED,'%Y-%m-%d %H:%i:%s') STRTIMERECORDED,
+			f.TYPE,f.USER_ID,u.U_NAME,u.MOBILE
+		from TB_FUND_RECORD f left join TB_USER u on f.USER_ID=u.ID where 1=1
+		<if test="params.containsKey('mobile') and params.mobile !=''">
+			and u.MOBILE=#{params.mobile}
+		</if>
+		<if test="params.containsKey('type') and params.type !=''">
+			and f.TYPE=#{params.type}
+		</if>
+		<if test="params.containsKey('status') and params.status !=''">
+			and f.STATUS=#{params.status}
+		</if>
+		<if test="startTime !=null">
+			and f.TIMERECORDED &gt;=#{startTime}
+		</if>
+		<if test="endTime !=null">
+			and f.TIMERECORDED &lt;=#{endTime}
+		</if>
+		order by 
+		f.TIMERECORDED DESC
+	</select>
+</mapper>

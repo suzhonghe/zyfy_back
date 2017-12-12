@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace='com.zhongyang.java.dao.UserDao'>
+	<resultMap type="com.zhongyang.java.zyfyback.pojo.User" id="rm">
+		<id column="ID" property="id" />
+		<result column="ENABLED" property="enabled" />
+		<result column="LASTLOGINDATE" property="lastLoginDate" />
+		<result column="LASTMODIFYDATE" property="lastModifyDate" />
+		<result column="LOGINNAME" property="loginName" />
+		<result column="MOBILE" property="mobile" />
+		<result column="ID_CODE" property="idCode" />
+		<result column="U_NAME" property="userName" />
+		<result column="PASSPHRASE" property="passphrase" />
+		<result column="REGISTERDATE" property="registerDate" />
+		<result column="REFERRAL_ID" property="referralId" />
+		<result column="SALT" property="salt" />
+		<result column="USERTYPE" property="userType" />
+		<result column="CUSTTYPE" property="custType" />
+		<result column="ALLOWTIME" property="allowTime" />
+		<result column="BIRTHDATE" property="birthDate" />
+	</resultMap>
+	<sql id="sqlfile">
+		ENABLED,LASTLOGINDATE,LASTMODIFYDATE,LOGINNAME,MOBILE,ID_CODE,U_NAME,PASSPHRASE,
+		REGISTERDATE,REFERRAL_ID,SALT,USERTYPE,ALLOWTIME,CUSTTYPE
+	</sql>
+	<select id="selectUserByParams" parameterType="com.zhongyang.java.zyfyback.pojo.User"
+		resultMap="rm">
+		select ID,
+		<include refid="sqlfile" />
+		from TB_USER where 1=1
+		<if test="id!=null">and ID=#{id}</if>
+		<if test="loginName!=null">and LOGINNAME=#{loginName}</if>
+		<if test="mobile!=null">and MOBILE=#{mobile}</if>
+	</select>
+	<select id="selectUsersByInvestParams" parameterType="com.zhongyang.java.zyfyback.pojo.Invest"
+		resultMap="rm">
+		select DISTINCT u.ID,
+		<include refid="sqlfile" />
+		from TB_USER u left join TB_INVEST i on u.ID=i.USERID
+		where 1=1
+		<if test="loanId !=null">and i.LOANID=#{loanId}</if>
+		<if test="status !=null">and i.STATUS=#{status}</if>
+	</select>
+
+	<update id="updateUserByParams" parameterType="com.zhongyang.java.zyfyback.pojo.User">
+		update TB_USER
+		<set>
+			<if test="enabled!=null">ENABLED=#{enabled},</if>
+			<if test="lastModifyDate!=null">LASTMODIFYDATE=#{lastModifyDate},</if>
+			<if test="mobile!=null">MOBILE=#{mobile},</if>
+			<if test="userType!=null and userType!=0">USERTYPE=#{userType},</if>
+			<if test="allowTime!=null">ALLOWTIME=#{allowTime},</if>
+			<if test="! isLock">ALLOWTIME=NULL,</if>
+			<if test="referralId!=null">REFERRAL_ID=#{referralId},</if>
+			<if test="userName!=null">U_NAME=#{userName},</if>
+			<if test="idCode!=null">ID_CODE=#{idCode},</if>
+		</set>
+		where 1=1
+		<if test="id !=null">and ID=#{id}</if>
+		<if test="oriReferralId !=null">and REFERRAL_ID=#{oriReferralId}</if>
+	</update>
+
+	<select id="selectUserByPage" parameterType="com.zhongyang.java.system.page.Page"
+		resultMap="rm">
+		select
+		u.ID,u.ENABLED,u.LASTLOGINDATE,u.LOGINNAME,u.MOBILE,u.U_NAME,u.REGISTERDATE,u.USERTYPE,
+		u.ALLOWTIME,ru.MOBILE REFMOBILE,u.ID_CODE
+		from TB_USER u left join
+		TB_USER ru on u.REFERRAL_ID=ru.ID
+		where 1=1
+		<if test="startTime !=null">and u.REGISTERDATE &gt;=#{startTime}</if>
+		<if test="endTime !=null">and u.REGISTERDATE &lt;=#{endTime}</if>
+		<if test="params.containsKey('mobile') and params.mobile !=''">
+			and u.MOBILE=#{params.mobile}
+		</if>
+		<if test="params.containsKey('userName') and params.userName !=''">
+			and u.U_NAME=#{params.userName}
+		</if>
+		order by u.REGISTERDATE DESC
+	</select>
+
+	<select id="selectUserDetailByParams" parameterType="com.zhongyang.java.zyfyback.pojo.User"
+		resultType="com.zhongyang.java.zyfyback.returndata.UserDetail">
+		select u.MOBILE mobile,u.LOGINNAME loginName,r.MOBILE refferral,
+		DATE_FORMAT(u.REGISTERDATE,'%Y-%m-%d %H:%i:%s') registerDate,
+		u.ID_CODE idCode, u.U_NAME userName,acc.CARD_NO cardNo,u.USERTYPE
+		userType,
+		DATE_FORMAT(u.LASTLOGINDATE,'%Y-%m-%d %H:%i:%s')
+		lastLoginDate
+		from TB_USER u left join TB_BM_ACCOUNT acc on
+		u.ID=acc.USER_ID
+		left join TB_USER r on u.REFERRAL_ID=r.ID
+		where 1=1
+		<if test="mobile !=null and mobile !=''">and u.MOBILE=#{mobile}</if>
+		<if test="id !=null and id !=''">and u.ID=#{id}</if>
+	</select>
+
+	<select id="getUserMobiles" parameterType="java.util.Map"
+		resultType="com.zhongyang.java.zyfyback.pojo.User">
+		SELECT MOBILE FROM TB_USER where 1=1 and CUSTTYPE='1'
+		<if test="startTime != null">and DATE_FORMAT(REGISTERDATE,'%Y-%m-%d') &gt;=#{startTime}</if>
+		<if test="endTime != null">and DATE_FORMAT(REGISTERDATE,'%Y-%m-%d') &lt;=#{endTime}</if>
+	</select>
+
+	<select id="queryUserBirthdayByPage" parameterType="com.zhongyang.java.system.page.Page"
+		resultType="com.zhongyang.java.zyfyback.pojo.User">
+		select ID id,U_NAME userName,MOBILE mobile,ID_CODE idCode,BIRTHDATE
+		birthDate from TB_USER where 1=1 and CUSTTYPE='1'
+		<if test="params.containsKey('startTime')">and DATE_FORMAT(BIRTHDATE,'%m-%d')
+			&gt;=#{params.startTime}</if>
+		<if test="params.containsKey('endTime')">and DATE_FORMAT(BIRTHDATE,'%m-%d') &lt;=#{params.endTime}
+		</if>
+	</select>
+
+	<select id="selectInvestUsers" parameterType="com.zhongyang.java.system.page.Page"
+		resultType="com.zhongyang.java.zyfyback.pojo.User">
+		
+		select DISTINCT u.MOBILE mobile from TB_USER u left join TB_INVEST i 
+		on u.ID=i.USERID
+		where 1=1 and u.CUSTTYPE='1' and i.STATUS in('AUDITING','SETTLED','CLEARED')
+		<if test="params.containsKey('startTime') and params.startTime !=''">
+			and DATE_FORMAT(u.REGISTERDATE,'%Y-%m-%d') &gt;=#{params.startTime}
+		</if>
+		<if test="params.containsKey('endTime') and endTime !=''">
+			and DATE_FORMAT(u.REGISTERDATE,'%Y-%m-%d') &lt;=#{params.endTime}
+		</if>
+		
+	</select>
+</mapper>

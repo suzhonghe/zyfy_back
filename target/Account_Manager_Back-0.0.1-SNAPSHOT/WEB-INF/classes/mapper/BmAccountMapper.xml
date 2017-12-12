@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC '-//mybatis.org//DTD Mapper 3.0//EN'
+'http://mybatis.org/dtd/mybatis-3-mapper.dtd'>
+
+<mapper namespace='com.zhongyang.java.dao.BmAccountDao'>
+ 	<resultMap type="com.zhongyang.java.bankmanager.entity.BmAccount" id="rm">
+ 		<id column="ID" property="id"/>
+ 		<result column="PLATCUST" property="platcust"/>
+ 		<result column="USER_NAME" property="userName"/>
+ 		<result column="ID_TYPE" property="idType"/>
+ 		<result column="ID_CODE" property="idCode"/>
+ 		<result column="CARD_NO" property="cardNo"/>
+ 		<result column="CARD_TYPE" property="cardType"/>
+ 		<result column="OPEN_BRANCH" property="openBranch"/>
+ 		<result column="PRE_MOBILE" property="preMobile"/>
+ 		<result column="REMARK" property="remark"/>
+ 		<result column="USER_ID" property="userId"/>
+ 	</resultMap>
+ 	
+ 	<sql id="sqlfile">
+ 		PLATCUST,USER_NAME,ID_TYPE,ID_CODE,CARD_NO,CARD_TYPE,OPEN_BRANCH,PRE_MOBILE,REMARK,USER_ID
+ 	</sql>
+ 	
+ 	<select id="selectBmAccountByParams" parameterType="com.zhongyang.java.bankmanager.entity.BmAccount" resultMap="rm">
+ 		select ID,
+ 			<include refid="sqlfile"/>
+ 		from TB_BM_ACCOUNT where 1=1
+ 			<if test="id!=null and id!=''">and ID=#{id}</if>
+ 			<if test="userId!=null and userId!=''">and USER_ID=#{userId}</if>
+ 	</select>
+ 	
+ 	<select id="selectBmAccountByUser" parameterType="com.zhongyang.java.zyfyback.pojo.User" resultMap="rm">
+ 		select acc.ID,acc.PLATCUST,acc.USER_NAME,acc.ID_TYPE,acc.ID_CODE,acc.CARD_NO,
+ 		acc.CARD_TYPE,acc.OPEN_BRANCH,acc.PRE_MOBILE,acc.REMARK,acc.USER_ID
+ 		from TB_BM_ACCOUNT acc left join TB_USER u on acc.USER_ID=u.ID
+ 		where 1=1
+ 			<if test="mobile !=null">and u.MOBILE=#{mobile}</if> 
+ 	</select>
+ 	
+ 	<update id="updateBmAccountByParams" parameterType="com.zhongyang.java.bankmanager.entity.BmAccount">
+ 		update TB_BM_ACCOUNT
+ 			<set>
+ 				<if test="preMobile !=null">PRE_MOBILE=#{preMobile},</if>
+ 				<if test="remark !=null">REMARK=#{remark},</if>
+ 			</set>
+ 			<if test="id !=null or userId !=null">
+ 				where 1=1
+	 			<if test="id !=null">and ID=#{id}</if>
+	 			<if test="userId !=null">and USER_ID=#{userId}</if>
+ 			</if>
+ 	</update>
+</mapper>

@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC '-//mybatis.org//DTD Mapper 3.0//EN'
+'http://mybatis.org/dtd/mybatis-3-mapper.dtd'>
+<mapper namespace='com.zhongyang.java.dao.SettledRefundDetailDao'>
+	<resultMap type="com.zhongyang.java.bankmanager.entity.SettledRefundDetail" id="rm">
+		<id column="ID" property="id"/>
+		<result column="PLAT_NO" property="plat_no"/>
+		<result column="REFUND_DATE" property="refund_date"/>
+		<result column="REFUND_TIME" property="refund_time"/>
+		<result column="ORDER_NO" property="order_no"/>
+		<result column="TRANS_AMT" property="trans_amt"/>
+	</resultMap>
+	<sql id="sqlfile">
+		select ID,PLAT_NO,REFUND_DATE,REFUND_TIME,ORDER_NO,TRANS_AMT from TB_BM_SETTLED_REFUND_DETAIL where 1=1
+	</sql>
+	
+	<insert id="batchInsertSettledRefundDetail" parameterType="java.util.List">
+		insert into TB_BM_SETTLED_REFUND_DETAIL(ID,PLAT_NO,REFUND_DATE,REFUND_TIME,ORDER_NO,TRANS_AMT)
+		values
+		<foreach collection="list" item="item" index="index" separator=",">
+			(#{item.id},#{item.plat_no},#{item.refund_date},#{item.refund_time},
+			#{item.order_no},#{item.trans_amt})
+  		</foreach>
+	</insert>
+	
+	<delete id="batchDeleteSettledRefundDetail" parameterType="java.util.List">
+		delete from TB_BM_SETTLED_REFUND_DETAIL where ORDER_NO in 
+			<foreach collection="list" index="index" item="item" open="(" separator="," close=")"> 
+       			 #{item.order_no} 
+    		</foreach>
+	</delete>
+	
+	<select id="selectMoreByParams" parameterType="com.zhongyang.java.bankmanager.entity.SettledRefundDetail" resultMap="rm">
+		<include refid="sqlfile"/>
+			<if test="order_no !=null">and ORDER_NO=#{order_no}</if>
+			<if test="id !=null">and ID=#{id}</if>
+	</select>
+	
+	<select id="selectOneByParams" parameterType="com.zhongyang.java.bankmanager.entity.SettledRefundDetail" resultMap="rm">
+		<include refid="sqlfile"/>
+			<if test="order_no !=null">and ORDER_NO=#{order_no}</if>
+			<if test="id !=null">and ID=#{id}</if>
+	</select>
+	
+	<select id="selectByPage" parameterType="com.zhongyang.java.system.page.Page" resultMap="rm">
+		<include refid="sqlfile"/>
+			<if test="strStartTime !=null and strStartTime !=''">and REFUND_DATE &gt;=#{strStartTime}</if>
+			<if test="strEndTime !=null and strEndTime !=''">and REFUND_DATE &gt;=#{strEndTime}</if>
+			order by REFUND_DATE DESC,REFUND_TIME DESC
+	</select>
+</mapper>

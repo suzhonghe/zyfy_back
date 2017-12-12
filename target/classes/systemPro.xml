@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<SYSTEM>
+
+	<ZYCF_IP>http://114.246.11.158:9000/Account_Manager_Back</ZYCF_IP>
+	<!-- 平台手机号 -->
+	<ZYCF_PLAT_MOBILE>15311340737</ZYCF_PLAT_MOBILE>
+	
+	<!-- 生产环境地址 -->
+<!-- 	<ZYCF_REQ_URL>https://fd.xib.com.cn:443</ZYCF_REQ_URL>  -->
+	
+	<!-- 测试、生产环境资金账户管理平台注册的平台编号 -->
+<!-- 	<ZYCF_PLAT_NO>XIB-ZYFY-A-90079279</ZYCF_PLAT_NO> -->
+	<!-- 测试环境地址 -->
+<!-- 	<ZYCF_REQ_URL>https://xibtest.xib.com.cn:5443</ZYCF_REQ_URL> -->
+	<!-- 测试、生产环境支付通道 -->
+<!-- 		<ZYCF_PAY_CODE>051</ZYCF_PAY_CODE> -->
+	
+	<!-- 开发环境 -->
+	<ZYCF_PLAT_NO>XIB-ZYFYL-B-41551130</ZYCF_PLAT_NO>
+	<ZYCF_REQ_URL>http://58.23.16.244:2080</ZYCF_REQ_URL>
+	 <ZYCF_PAY_CODE>029</ZYCF_PAY_CODE>
+	
+	<!-- 标的发布路径 -->
+	<ZYCF_LOAN_PUBLISH>/fd-client/publishAction_publish</ZYCF_LOAN_PUBLISH>
+	<!-- 标的成废 -->
+	<ZYCF_LOAN_ISTABLISH>/fd-client/establishAction_establishOrAbandon</ZYCF_LOAN_ISTABLISH>
+	<!-- 标的还款 -->
+	<ZYCF_LOAN_REPAY>/fd-client/repayAction_prodRepay</ZYCF_LOAN_REPAY>
+	<!-- 企业充值路径 -->
+	<ZYCF_PLATFORM_CHARGE>/fd-client/platformTransferAction_platCharge</ZYCF_PLATFORM_CHARGE>
+	<!-- 企业提现路径 -->
+	<ZYCF_PLATFORM_WITHDRAW>/fd-client/platformTransferAction_platWithdraw</ZYCF_PLATFORM_WITHDRAW>
+	<!-- 平台不同子账户之间转账路径 -->
+	<ZYCF_PLATFORM_TRANS>/fd-client/transferAction_platformAccountConverse</ZYCF_PLATFORM_TRANS>
+	<!-- 资金变动明细查询路径 -->
+	<ZYCF_FUND_LIST>/fd-client/fundAction_getFundList</ZYCF_FUND_LIST>
+	<!-- 资金余额查询路径 -->
+	<ZYCF_ACCOUNT_INFO>/fd-client/accountAction_getAccountInfo</ZYCF_ACCOUNT_INFO>
+	<!-- 还款明细查询路径 -->
+	<ZYCF_REPAY_DETAIL>/fd-client/proRefundAction_getRefund</ZYCF_REPAY_DETAIL>
+	<!-- 标的投资明细查询路径 -->
+	<ZYCF_LOAN_INVEST>/fd-client/publishAction_getBuyInfo</ZYCF_LOAN_INVEST>
+	<!-- 标的信息查询 -->
+	<ZYCF_LOAN_INFO>/fd-client/publishAction_getProductInfo</ZYCF_LOAN_INFO>
+	<!-- 账户余额明细查询 -->
+	<ZYCF_ACCOUNT_BALANCE>/fd-client/accountAction_getAccountN_balace</ZYCF_ACCOUNT_BALANCE>
+	<!-- 标的账户余额查询 -->
+	<ZYCF_LOANACCOUNT_BALANCE>/fd-client/publishAction_getProductN_balance</ZYCF_LOANACCOUNT_BALANCE>
+	<!-- 订单状态查询 -->
+	<ZYCF_ORDER_STATUS>/fd-client/orderQueryAction_queryOrder</ZYCF_ORDER_STATUS>
+	<!-- 充值订单状态查询 -->
+	<ZYCF_CHARGE_ORDER_STATUS>/fd-client/orderQueryAction_getFundOrderInfo</ZYCF_CHARGE_ORDER_STATUS>
+	<!-- 平台客户编号查询 -->
+	<ZYCF_PLATCUST_SEARCH>/fd-client/userAction_getPlatCustInfo</ZYCF_PLATCUST_SEARCH>
+	<!-- 客户信息变更路径 -->
+	<ZYCF_ACCOUNTINFO_UPDATE>/fd-client/userAction_updatePlatAcct</ZYCF_ACCOUNTINFO_UPDATE>
+	<!-- 平台转账给个人 -->
+	<ZYCF_PLAT_TO_PERSON>/fd-client/platformTransferAction_platTrans</ZYCF_PLAT_TO_PERSON>
+	<ZYCF_COMPENSATE_REPAY>/fd-client/publish_updCompensation</ZYCF_COMPENSATE_REPAY>
+	
+	<!-- 充值对账路径 -->
+	<ZYCF_SETTLED_RECHARGE>/fd-client/liquidateAction_fundData</ZYCF_SETTLED_RECHARGE>
+	
+	<!-- 退票对账路径 -->
+	<ZYCF_SETTLED_REFUND_DETAIL>/fd-client/liquidateAction_refundData</ZYCF_SETTLED_REFUND_DETAIL>
+	
+	<!-- 提现对账路径 -->
+	<ZYCF_SETTLED_WITHDRAWAL>/fd-client/liquidateAction_withdrawData</ZYCF_SETTLED_WITHDRAWAL>
+	
+	<PRIVATE_KEY_PATH>zyfy.pfx</PRIVATE_KEY_PATH>
+	<PUBLIC_KEY_PATH>zyfy.crt</PUBLIC_KEY_PATH>
+	<PRIVATE_KEY_PASSWD>zycf123456</PRIVATE_KEY_PASSWD>
+<!-- <PRIVATE_KEY_PATH>zycf.pfx</PRIVATE_KEY_PATH> -->
+<!-- 	<PUBLIC_KEY_PATH>zycf.crt</PUBLIC_KEY_PATH> -->
+<!-- 	<PRIVATE_KEY_PASSWD>zycf963852741</PRIVATE_KEY_PASSWD> -->
+	
+	<ZYCFMANAGE_PHOTO_FILE>G://upload/</ZYCFMANAGE_PHOTO_FILE>
+	<ZYCFMANAGE_PC_BANNER>G://pc_banner/</ZYCFMANAGE_PC_BANNER>
+	<ZYCFMANAGE_APP_BANNER>G://app_banner/</ZYCFMANAGE_APP_BANNER>
+	<ZYCFMANAGE_ADVERTISEMENT>G://advertisement/</ZYCFMANAGE_ADVERTISEMENT>
+	<ZYCFMANAGE_ARTICLE>G://article/</ZYCFMANAGE_ARTICLE>
+	<ZYCFMANAGE_NEWS>G://news/</ZYCFMANAGE_NEWS>
+	<CONTRACT_HOME>G://contracts/</CONTRACT_HOME>
+	
+ 
+</SYSTEM>

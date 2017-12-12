@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace='com.zhongyang.java.dao.UserFundDao'>
+	<resultMap type="com.zhongyang.java.zyfyback.pojo.UserFund" id="rm">
+		<id column="ID" property="id"/>
+		<result column="USER_ID" property="userId"/>
+		<result column="AVAILABLE_AMOUNT" property="availableAmount"/>
+		<result column="DEPOSIT_AMOUNT" property="depositAmount"/>
+		<result column="DUE_IN_AMOUNT" property="dueInAmount"/>
+		<result column="DUE_OUT_AMOUNT" property="dueOutAmount"/>
+		<result column="FROZEN_AMOUNT" property="frozenAmount"/>
+		<result column="TIMECREATED" property="timeCreated"/>
+		<result column="TIMELASTUPDATE" property="timeLastUpdate"/>
+		<result column="WITHDRAW_AMOUNT" property="withdrawAmount"/>
+		<result column="UF_STATUS" property="ufStatus"/>
+		<result column="ALL_REVENUE" property="allRevenu"/>
+		<result column="DUE_REVENUE" property="dueRevenu"/>
+		<result column="AMOUNT" property="remarkAmount"/>
+	</resultMap>
+	
+	<sql id="sqlfield">
+		USER_ID,AVAILABLE_AMOUNT,DEPOSIT_AMOUNT,DUE_IN_AMOUNT,DUE_OUT_AMOUNT,
+		FROZEN_AMOUNT,TIMECREATED,TIMELASTUPDATE,WITHDRAW_AMOUNT,
+		UF_STATUS,ALL_REVENUE ,DUE_REVENUE
+	</sql>
+	
+	<update id="updateUserFundByParams" parameterType="com.zhongyang.java.zyfyback.pojo.UserFund">
+		update TB_USER_FUND
+			<set>
+				<if test="availableAmount !=null">AVAILABLE_AMOUNT=AVAILABLE_AMOUNT+#{availableAmount},</if>
+				<if test="depositAmount !=null">DEPOSIT_AMOUNT=DEPOSIT_AMOUNT+#{depositAmount},</if>
+				<if test="dueInAmount !=null">DUE_IN_AMOUNT=DUE_IN_AMOUNT+#{dueInAmount},</if>
+				<if test="dueOutAmount !=null">DUE_OUT_AMOUNT=DUE_OUT_AMOUNT+#{dueOutAmount},</if>
+				<if test="frozenAmount !=null">FROZEN_AMOUNT=FROZEN_AMOUNT+#{frozenAmount},</if>
+				<if test="withdrawAmount !=null">WITHDRAW_AMOUNT=WITHDRAW_AMOUNT+#{withdrawAmount},</if>
+				<if test="allRevenu !=null">ALL_REVENUE=ALL_REVENUE+#{allRevenu},</if>
+				<if test="dueRevenu !=null">DUE_REVENUE=DUE_REVENUE+#{dueRevenu},</if>
+				<if test="ufStatus !=null">UF_STATUS=#{ufStatus},</if>
+				<if test="timeLastUpdate !=null">TIMELASTUPDATE=#{timeLastUpdate},</if>
+			</set>
+		where USER_ID=#{userId}
+	</update>
+	
+	<select id="selectUserFundByParams" parameterType="com.zhongyang.java.zyfyback.pojo.UserFund" resultMap="rm">
+		select ID,
+		<include refid="sqlfield"/>
+		from TB_USER_FUND where 1=1
+			<if test="userId!=null and userId!=''">and USER_ID=#{userId}</if>
+	</select>
+	
+	<select id="selectByInvest" parameterType="com.zhongyang.java.zyfyback.pojo.Invest" resultMap="rm">
+		select i.AMOUNT,
+		<include refid="sqlfield"/>
+		from TB_USER_FUND f left join TB_INVEST i on f.USER_ID=i.USERID
+		where 1=1
+		<if test="status !=null">and i.STATUS=#{status}</if>
+		<if test="loanId !=null">and i.LOANID=#{loanId}</if>
+	
+	</select>
+	<update id="batchUpdateUserFunds" parameterType="java.util.List">
+    	<foreach collection="list" index="index" item="item" open="" separator=";" close="">
+	    	update TB_USER_FUND 
+	    		<set>
+	    			<if test="item.availableAmount !=null">AVAILABLE_AMOUNT=AVAILABLE_AMOUNT+#{item.availableAmount},</if>
+	    			<if test="item.dueInAmount !=null">DUE_IN_AMOUNT=DUE_IN_AMOUNT+#{item.dueInAmount},</if>
+	    			<if test="item.timeLastUpdate !=null">TIMELASTUPDATE=#{item.timeLastUpdate},</if>
+	    			<if test="item.allRevenu !=null">ALL_REVENUE=ALL_REVENUE+#{item.allRevenu},</if>
+	    			<if test="item.frozenAmount !=null">FROZEN_AMOUNT=FROZEN_AMOUNT+#{item.frozenAmount},</if>
+	    		</set>
+	    	where USER_ID=#{item.userId} 
+    	</foreach>
+    </update>
+	 
+	 
+	<select id="selectDuInAmount" parameterType="String" resultType="BigDecimal">
+		select sum(r.AMOUNTINTEREST+r.AMOUNTPRINCIPAL) from TB_INVEST i left join TB_INVEST_REPAYMENT r on i.ID=r.INVEST_ID
+		where i.USERID=#{userId} and i.STATUS ='SETTLED' and r.STATUS IN('UNDUE','OVERDUE')
+	</select>
+	
+	<select id="selectDuOutAmount" parameterType="String" resultType="BigDecimal">
+		select sum(r.AMOUNTINTEREST+r.AMOUNTPRINCIPAL) from TB_LOAN l left join TB_LOAN_REPAYMENT r on l.ID=r.LOAN_ID
+		where l.LOANUSERID=#{userId} and l.L_STATUS='SETTLED' and r.STATUS IN('UNDUE','OVERDUE')
+	</select>
+</mapper>

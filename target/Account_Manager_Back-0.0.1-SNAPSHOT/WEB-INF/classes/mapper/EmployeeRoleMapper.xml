@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.zhongyang.java.dao.EmployeeRoleDao">
+	<resultMap id="BaseResultMap" type="com.zhongyang.java.zyfyback.pojo.EmployeeRole">
+		<id column="ROLE_ID" property="roleId" />
+		<id column="EMP_ID" property="empId" />
+	</resultMap>
+	
+	<select id="selectEmpRoleByParams" parameterType="com.zhongyang.java.zyfyback.pojo.EmployeeRole"
+		resultMap="BaseResultMap">
+		select ROLE_ID roleId,EMP_ID empId from RF_EMP_ROLE WHERE 1=1
+		<if test="roleId!=null and roleId!=''">and ROLE_ID=#{roleId}</if>
+		<if test="empId!=null and empId!=''">and EMP_ID=#{empId}</if>
+	</select>
+	
+	<insert id="insertEmployeeRole" parameterType="com.zhongyang.java.zyfyback.pojo.EmployeeRole">
+		insert into RF_EMP_ROLE(ROLE_ID,EMP_ID)values(#{roleId},#{empId})
+	</insert>
+	
+	<delete id="deleteEmpRoleByParams" parameterType="com.zhongyang.java.zyfyback.pojo.EmployeeRole">
+		delete from RF_EMP_ROLE where EMP_ID=#{empId}
+	</delete>
+</mapper>

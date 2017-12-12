@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace='com.zhongyang.java.dao.UntredtedApplicationDao'>
+	<!-- 插入申请记录 -->
+	<insert id="insertUntredtedApplication" parameterType="com.zhongyang.java.bankmanager.entity.UntredtedApplication">
+		INSERT INTO
+		TB_TRANSFER_APPLICATION
+		(ID,ACCOUNT,OPERATIONEMPLYEE,TELEPHONE,TRADEAMOUNT,STATUS,CREATETIME,
+		DESCRIPTION,USERNAME,USERID,ORDERID,CAUSE_TYPE,CAHERG_TYPE)
+		VALUES(#{id},#{account},#{operationEmplyee},#{telephone},
+		#{tradeAmount},#{status},
+		#{createTime},#{description},#{userName},#{userId},#{orderId},#{cause_type},#{charge_type})
+	</insert>
+	
+	<resultMap type="com.zhongyang.java.bankmanager.entity.UntredtedApplication" id="rm">
+		<id column="ID" property="id"/>
+		<result column="ACCOUNT" property="account"/>
+		<result column="OPERATIONEMPLYEE" property="operationEmplyee"/>
+		<result column="USERID" property="userId"/>
+		<result column="ORDERID" property="orderId"/>
+		<result column="USERNAME" property="userName"/>
+		<result column="TELEPHONE" property="telephone"/>
+		<result column="TRADEAMOUNT" property="tradeAmount"/>
+		<result column="STATUS" property="status"/>
+		<result column="CREATETIME" property="createTime"/>
+		<result column="DESCRIPTION" property="description"/>
+		<result column="CAUSE_TYPE" property="cause_type"/>
+		<result column="CAHERG_TYPE" property="charge_type"/>
+	</resultMap>
+	
+	<select id="selectUntredtedApplicationByParams" parameterType="com.zhongyang.java.bankmanager.entity.UntredtedApplication" resultMap="rm">
+		SELECT  ID,ACCOUNT,OPERATIONEMPLYEE,USERID,ORDERID,USERNAME,TELEPHONE, 
+		TRADEAMOUNT, STATUS,
+		CREATETIME,DESCRIPTION,CAUSE_TYPE,CAHERG_TYPE  FROM TB_TRANSFER_APPLICATION
+		where 1 = 1
+		<if test="id != null">
+			and ID = #{id}
+		</if>
+		<if test="orderId != null">
+			and ORDERID = #{orderId}
+		</if>
+		<if test="status != null">
+			and STATUS = #{status}
+		</if>
+	</select>
+
+	<update id="updateUntredtedApplicationByParams" parameterType="com.zhongyang.java.bankmanager.entity.UntredtedApplication">
+		update TB_TRANSFER_APPLICATION
+		<set>
+			<if test="flag !=null">FLGA=#{flag},</if>
+			<if test="status !=null">STATUS=#{status},</if>
+			<if test="orderId !=null">ORDERID=#{orderId},</if>
+			
+		</set>
+		where 1=1
+		<if test="id !=null">and ID = #{id}</if>
+	</update>
+</mapper>

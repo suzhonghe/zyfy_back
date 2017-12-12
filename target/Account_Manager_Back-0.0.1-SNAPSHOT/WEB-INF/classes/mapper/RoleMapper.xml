@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.zhongyang.java.dao.RoleDao">
+	<resultMap id="rm" type="com.zhongyang.java.zyfyback.pojo.Role">
+		<id column="ID" property="id" />
+		<result column="DESCRIPTION" property="description" />
+		<result column="R_NAME" property="r_name" />
+		<result column="R_PRIVILIGES" property="r_priviliges" />
+	</resultMap>
+	
+	<sql id="sqlfile">
+		select ID, DESCRIPTION, R_NAME,R_PRIVILIGES from TB_ROLE where 1=1
+	</sql>
+	
+	<select id="selectAllRoles" resultMap="rm">
+		<include refid="sqlfile"/>
+	</select>
+	
+	<select id="selectRoleByParams" parameterType="com.zhongyang.java.zyfyback.pojo.Role" resultMap="rm">
+		<include refid="sqlfile"/>
+			<if test="id!=null and id!=''">and ID=#{id}</if>
+			<if test="r_name!=null and r_name!=''">and R_NAME=#{r_name}</if>
+			
+	</select>
+	
+	<select id="selectEmployeeRole" parameterType="com.zhongyang.java.zyfyback.pojo.Employee" resultMap="rm" >
+		select ID, DESCRIPTION, R_NAME,R_PRIVILIGES 
+		from TB_ROLE R left join RF_EMP_ROLE ER ON R.ID = ER.ROLE_ID
+		where 1=1
+		and ER.EMP_ID = #{empId}
+	</select>
+	
+	<insert id="insertRole" parameterType="com.zhongyang.java.zyfyback.pojo.Role">
+		insert into TB_ROLE(ID,DESCRIPTION,R_NAME,R_PRIVILIGES)
+		values(#{id},#{description},#{r_name},#{r_priviliges})
+	</insert>
+	<update id="updateRoleByParams" parameterType="com.zhongyang.java.zyfyback.pojo.Role">
+		update TB_ROLE
+			<set>
+				<if test="r_priviliges !=null">R_PRIVILIGES=#{r_priviliges},</if>
+				<if test="description !=null">DESCRIPTION=#{description},</if>
+				<if test="r_name !=null">R_NAME=#{r_name},</if>
+			</set>
+		where ID=#{id}
+	</update>
+</mapper>

@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.zhongyang.java.dao.EmployeeDao">
+	<resultMap id="rm" type="com.zhongyang.java.zyfyback.pojo.Employee">
+		<id column="ID" property="id" />
+		<result column="ENABLED" property="enabled" />
+		<result column="IDNUMBER" property="idnumber" />
+		<result column="LASTLOGINDATE" property="lastLoginDate" />
+		<result column="LOGIN_NAME" property="loginName" />
+		<result column="MOBILE" property="mobile" />
+		<result column="EMP_NAME" property="empName" />
+		<result column="PASSPHRASE" property="passphrase" />
+		<result column="REGISTERDATE" property="registerDate" />
+		<result column="SALT" property="salt" />
+		<result column="ORG_ID" property="orgId" />
+		<result column="EMP_STATUS" property="empStatus" />
+		<result column="O_NAME" property="orgName" />
+		<collection property="roles" ofType="com.zhongyang.java.zyfyback.pojo.Role" column="ID" select="selectRoleById" />
+	</resultMap>
+
+	<sql id="sqlfile">
+		ID, ENABLED, IDNUMBER, LASTLOGINDATE,
+		LOGIN_NAME, MOBILE, EMP_NAME,PASSPHRASE,REGISTERDATE, SALT,
+		ORG_ID,EMP_STATUS 
+	</sql>
+	
+	<select id="selectRoleById" parameterType="String" resultType="com.zhongyang.java.zyfyback.pojo.Role">
+		select ID id,R_NAME r_name from TB_ROLE r 
+		left join RF_EMP_ROLE er on r.ID=er.ROLE_ID
+		where er.EMP_ID=#{id}
+	</select>
+	<select id="selectEmployeeByParams" parameterType="com.zhongyang.java.zyfyback.pojo.Employee"
+		resultMap="rm">
+		select
+			<include refid="sqlfile" />
+		from TB_EMPLOYEE where 1=1
+			<if test="loginName!=null and loginName!=''">
+				and LOGIN_NAME = #{loginName}
+			</if>
+			<if test="id!=null and id!=''">
+				and ID=#{id}
+			</if>
+			<if test="mobile!=null and mobile!=''">
+				and MOBILE=#{mobile}
+			</if>
+	</select>
+
+	<update id="updateEmployeeByParams" parameterType="com.zhongyang.java.zyfyback.pojo.Employee">
+		update TB_EMPLOYEE
+			<set>
+				<if test="enabled !=null">ENABLED=#{enabled},</if>
+				<if test="idnumber !=null">IDNUMBER=#{idnumber},</if>
+				<if test="lastLoginDate !=null">LASTLOGINDATE=#{lastLoginDate},</if>
+				<if test="mobile !=null">MOBILE=#{mobile},</if>
+				<if test="loginName !=null">LOGIN_NAME=#{loginName},</if>
+				<if test="empName !=null">EMP_NAME=#{empName},</if>
+				<if test="passphrase !=null">PASSPHRASE=#{passphrase},</if>
+				<if test="salt !=null">SALT=#{salt},</if>
+				<if test="orgId !=null">ORG_ID=#{orgId},</if>
+				<if test="empStatus !=null">EMP_STATUS=#{empStatus},</if>
+			</set>
+		where 1=1
+			<if test="id !=null">and ID=#{id}</if>
+			<if test="mobile !=null">and MOBILE=#{mobile}</if>
+	</update>
+
+	<insert id="insertEmployee" parameterType="com.zhongyang.java.zyfyback.pojo.Employee">
+		insert into TB_EMPLOYEE(ID,ENABLED,IDNUMBER,LASTLOGINDATE,
+		LOGIN_NAME,MOBILE,EMP_NAME,PASSPHRASE,REGISTERDATE,SALT,ORG_ID,EMP_STATUS)
+		values(#{id},#{enabled},#{idnumber},#{lastLoginDate},#{loginName},
+		#{mobile},#{empName},#{passphrase},#{registerDate},#{salt},#{orgId},#{empStatus})
+	</insert>
+
+	<select id="selectEmployeeByRole" parameterType="com.zhongyang.java.zyfyback.pojo.Role"
+		resultMap="rm">
+		select EMP_NAME empName,MOBILE mobile,LOGIN_NAME loginName
+		from TB_EMPLOYEE e left join
+		RF_EMP_ROLE r on e.ID=r.EMP_ID where r.ROLE_ID=#{id} and ENABLED=1
+	</select>
+
+	<select id="selectAllEmployees" parameterType="com.zhongyang.java.system.page.Page" resultMap="rm">
+		select e.ID,ENABLED,IDNUMBER,LASTLOGINDATE,
+		LOGIN_NAME,MOBILE,EMP_NAME, REGISTERDATE,
+		ORG_ID,O_NAME 
+		from TB_EMPLOYEE e 
+		left join TB_ORGANIZATION o on e.ORG_ID=o.ID
+		where 1=1
+			and e.ENABLED=1
+		<if test="params.containsKey('orgId')and params.orgId != null and params.orgId!=''">
+			and e.ORG_ID=#{params.orgId}
+		</if>
+	</select>
+</mapper>

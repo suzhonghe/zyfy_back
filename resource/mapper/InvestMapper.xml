@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace='com.zhongyang.java.dao.InvestDao'>
+	<resultMap type="com.zhongyang.java.zyfyback.pojo.Invest" id="rm">
+		<id column="ID" property="id" />
+		<result column="ORDERID" property="orderId" />
+		<result column="AMOUNT" property="amount" />
+		<result column="LOANID" property="loanId" />
+		<result column="REPAYMETHOD" property="repayMethod" />
+		<result column="STATUS" property="status" />
+		<result column="SUBMITTIME" property="submitTime" />
+		<result column="USERID" property="userId" />
+		<result column="DAYS" property="days" />
+		<result column="MONTHS" property="months" />
+		<result column="YEARS" property="years" />
+		<result column="U_NAME" property="userName" />
+	</resultMap>
+	<sql id="sqlfield">
+		ORDERID,AMOUNT,LOANID,REPAYMETHOD,STATUS,SUBMITTIME,USERID,DAYS,MONTHS,YEARS
+	</sql>
+	<select id="selectInvestsByparams" parameterType="com.zhongyang.java.zyfyback.pojo.Invest"
+		resultMap="rm">
+		select i.ID,
+		<include refid="sqlfield" />,u.U_NAME
+		from TB_INVEST i left join TB_USER u on i.USERID=u.ID
+		<if test="loanId !=null or status !=null">
+			where 1=1
+			<if test="loanId!=null">and i.LOANID=#{loanId}</if>
+			<if test="status !=null">and i.STATUS=#{status}</if>
+		</if>
+		
+		order by case i.STATUS when 'CLEARED' THEN 1 when 'SETTLED' THEN 2 when
+		'AUDITING' THEN 3 when 'FAILED' THEN 4 ELSE 5 END,i.SUBMITTIME DESC
+	</select>
+	<update id="updateInvestStatusSettled" parameterType="com.zhongyang.java.zyfyback.pojo.Invest">
+		update TB_INVEST set STATUS=#{status} where STATUS='AUDITING' and LOANID=#{loanId}
+	</update>
+	
+	<update id="updateInvestStatusCleared" parameterType="com.zhongyang.java.zyfyback.pojo.Invest">
+		update TB_INVEST set STATUS=#{status} where STATUS='SETTLED' and LOANID=#{loanId}
+	</update>
+	
+	<select id="selectCountByParams" parameterType="String" resultType="int">
+		select count(*) from TB_INVEST where USERID=#{userId}
+	</select>
+	
+	<resultMap type="com.zhongyang.java.zyfyback.returndata.InvestDetail" id="page">
+		<id column="ID" property="investId"/>
+		<result column="AMOUNT" property="amount"/>
+		<result column="ORDERID" property="orderId"/>
+		<result column="L_STATUS" property="status"/>
+		<result column="STRSUBMITTIME" property="strSubmitTime"/>
+		<result column="TITLE" property="title"/>
+		<result column="METHOD" property="method"/>
+		<result column="MONTHS" property="months"/>
+		<result column="RATE" property="rate"/>
+		<result column="ADDRATE" property="addRate"/>
+		<result column="LOANID" property="loanId"/>
+		
+	</resultMap>
+	<select id="selectInvestByPage" parameterType="com.zhongyang.java.system.page.Page" resultMap="page">
+		select i.ID,i.AMOUNT,i.ORDERID,l.L_STATUS,DATE_FORMAT(i.SUBMITTIME,"%Y-%m-%d %H:%m:%i") STRSUBMITTIME,
+		l.TITLE,l.METHOD,l.MONTHS,l.RATE,l.ADDRATE,l.ID LOANID
+		from TB_INVEST i left join TB_LOAN l on i.LOANID=l.ID
+		where 1=1
+		<if test="params.containsKey('userId') and params.userId !=''">
+			and i.USERID=#{params.userId}
+		</if>
+		and i.STATUS in('CLEARED','SETTLED','AUDITING')
+		order by i.SUBMITTIME DESC
+	</select>
+	<update id="updateInvest" parameterType="com.zhongyang.java.zyfyback.pojo.Invest">
+		update TB_INVEST set STATUS=#{status} where ORDERID=#{orderId}
+	</update>
+	
+	<select id="selectUserInvestRepayment" parameterType="com.zhongyang.java.zyfyback.pojo.LoanRepayment"
+	resultType="com.zhongyang.java.zyfyback.pojo.User">
+		select u.MOBILE mobile,r.AMOUNTINTEREST+r.AMOUNTPRINCIPAL repayAmount from TB_INVEST i 
+		left join TB_USER u on i.USERID=u.ID 
+		left join TB_INVEST_REPAYMENT r on i.ID=r.INVEST_ID 
+		where i.STATUS IN('SETTLED','CLEARED') and i.LOANID=#{loanId} 
+		and r.CURRENTPERIOD=#{currentPeriod}
+	</select>
+</mapper>

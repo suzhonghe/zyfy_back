@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC '-//mybatis.org//DTD Mapper 3.0//EN'
+'http://mybatis.org/dtd/mybatis-3-mapper.dtd'>
+<mapper namespace='com.zhongyang.java.dao.SettledRechargeDao'>
+	<resultMap type="com.zhongyang.java.bankmanager.entity.SettledRecharge" id="rm">
+		<id column="ID" property="id"/>
+		<result column="PLAT_NO" property="plat_no"/>
+		<result column="SETTLED_DATE" property="settled_date"/>
+		<result column="SETTLED_TIME" property="settled_time"/>
+		<result column="ORDER_NO" property="order_no"/>
+		<result column="TRANS_AMT" property="trans_amt"/>
+		<result column="TRANS_TYPE" property="trans_type"/>
+		<result column="CHANNEL_NO" property="channel_no"/>
+		<result column="CHANNEL_SERIAL" property="channel_serial"/>
+	</resultMap>
+	<sql id="sqlfile">
+		select ID,PLAT_NO,SETTLED_DATE,SETTLED_TIME,ORDER_NO,TRANS_AMT,TRANS_TYPE,CHANNEL_NO,CHANNEL_SERIAL from TB_BM_SETTLED_RECHARGE where 1=1
+	</sql>
+	
+	<insert id="batchInsertSettledRecharge" parameterType="java.util.List">
+		insert into TB_BM_SETTLED_RECHARGE(ID,PLAT_NO,SETTLED_DATE,SETTLED_TIME,ORDER_NO,TRANS_AMT,TRANS_TYPE,CHANNEL_NO,CHANNEL_SERIAL)
+		values
+		<foreach collection="list" item="item" index="index" separator=",">
+			(#{item.id},#{item.plat_no},#{item.settled_date},#{item.settled_time},
+			#{item.order_no},#{item.trans_amt},#{item.trans_type},#{item.channel_no},#{item.channel_serial})
+  		</foreach>
+	</insert>
+	
+	<delete id="batchDeleteSettledRecharge" parameterType="java.util.List">
+		delete from TB_BM_SETTLED_RECHARGE where ORDER_NO in 
+			<foreach collection="list" index="index" item="item" open="(" separator="," close=")"> 
+       			 #{item.order_no} 
+    		</foreach>
+	</delete>
+	
+	<select id="selectMoreByParams" parameterType="com.zhongyang.java.bankmanager.entity.SettledWithdrawal" resultMap="rm">
+		<include refid="sqlfile"/>
+			<if test="order_no !=null">and ORDER_NO=#{order_no}</if>
+			<if test="id !=null">and ID=#{id}</if>
+	</select>
+	
+	<select id="selectOneByParams" parameterType="com.zhongyang.java.bankmanager.entity.SettledWithdrawal" resultMap="rm">
+		<include refid="sqlfile"/>
+			<if test="order_no !=null">and ORDER_NO=#{order_no}</if>
+			<if test="id !=null">and ID=#{id}</if>
+	</select>
+	
+	<select id="selectByPage" parameterType="com.zhongyang.java.system.page.Page" resultMap="rm">
+		<include refid="sqlfile"/>
+			<if test="strStartTime !=null and strStartTime !=''">and SETTLED_DATE &gt;=#{strStartTime}</if>
+			<if test="strEndTime !=null and strEndTime !=''">and SETTLED_DATE &gt;=#{strEndTime}</if>
+			order by SETTLED_DATE DESC,SETTLED_TIME DESC
+	</select>
+</mapper>

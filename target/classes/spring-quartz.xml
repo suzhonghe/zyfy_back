@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:mvc="http://www.springframework.org/schema/mvc"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans 
+						http://www.springframework.org/schema/beans/spring-beans.xsd  
+        				http://www.springframework.org/schema/context 
+        				http://www.springframework.org/schema/context/spring-context-4.2.xsd  
+        				http://www.springframework.org/schema/mvc 
+        				http://www.springframework.org/schema/mvc/spring-mvc-4.2.xsd">
+	
+	<!-- 逾期还款状态修改 -->
+	<bean id="loanRepayTaskJob"
+		class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+		<property name="targetObject" ref="loanRepayTask" />
+		<property name="targetMethod" value="loanRepaymentTask" />
+		<property name="concurrent" value="false" />
+	</bean>
+	<bean id="loanRepayTaskJobTrigger"
+		class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
+		<property name="jobDetail" ref="loanRepayTaskJob" />
+		<property name="cronExpression" value="	0 0 2 ? * TUE,WED,THU,FRI" />
+	</bean>
+	
+	<!-- 订单状态修改 -->
+	<bean id="orderTaskJob"
+		class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+		<property name="targetObject" ref="orderTask" />
+		<property name="targetMethod" value="OrderModifyStatusTask" />
+		<property name="concurrent" value="false" />
+	</bean>
+	<bean id="orderTaskJobTrigger"
+		class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
+		<property name="jobDetail" ref="orderTaskJob" />
+		<property name="cronExpression" value="0 0 2 * * ?" />
+	</bean>
+	
+	<bean id="virtualQuertz" lazy-init="false" autowire="no"
+		class="org.springframework.scheduling.quartz.SchedulerFactoryBean">
+		<property name="triggers">
+			<list>
+				<ref bean="loanRepayTaskJobTrigger"></ref>
+				<ref bean="orderTaskJobTrigger"></ref>
+			</list>
+		</property>
+	</bean>
+</beans>  

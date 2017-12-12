@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace='com.zhongyang.java.dao.PlatFundRecordDao'>
+
+	<resultMap type="com.zhongyang.java.zyfyback.pojo.PlatFundRecord" id="rm">
+		<id column="ID" property="id"/>
+		<result column="ACCOUNT" property="account"/>
+		<result column="AMOUNT" property="amount"/>
+		<result column="DESCRIPTION" property="description"/>
+		<result column="OPERATION" property="operation"/>
+		<result column="ORDERID" property="orderId"/>
+		<result column="REMARK" property="remark"/>
+		<result column="STATUS" property="status"/>
+		<result column="TIMERECORDED" property="timeRecorded"/>
+		<result column="TYPE" property="type"/>
+		<result column="USERID" property="userId"/>
+		<result column="U_NAME" property="userName"/>
+		<result column="MOBILE" property="mobile"/>
+	</resultMap>
+	<sql id="sqlfile">
+		ACCOUNT,AMOUNT,DESCRIPTION,OPERATION,ORDERID,REMARK,STATUS,TIMERECORDED,TYPE,USERID
+	</sql>
+	
+	<insert id="insertPlatFundRecord" parameterType="com.zhongyang.java.zyfyback.pojo.PlatFundRecord">
+		insert into TB_PLAT_FUND_RECORD(ID,ACCOUNT,AMOUNT,DESCRIPTION,OPERATION,
+		ORDERID,REMARK,STATUS,TIMERECORDED,TYPE,USERID)values(#{id},#{account},#{amount},
+		#{description},#{operation},#{orderId},#{remark},#{status},#{timeRecorded},#{type},
+		#{userId})
+	</insert>
+	
+	<update id="updatePlatFundRecord" parameterType="com.zhongyang.java.zyfyback.pojo.PlatFundRecord">
+		update TB_PLAT_FUND_RECORD
+			<set>
+				<if test="remark !=null and remark!=''">REMARK=#{remark},</if>
+				<if test="status !=null and status!=''">STATUS=#{status},</if>
+			</set>
+				where 1=1
+				<if test="id !=null">and ID=#{id}</if>
+				<if test="orderId !=null"> and ORDERID=#{orderId}</if>
+		
+	</update>
+	
+	<select id="selectByPage" parameterType="com.zhongyang.java.system.page.Page" resultMap="rm">
+		select r.ID,r.ACCOUNT,r.AMOUNT,r.DESCRIPTION,r.OPERATION,r.ORDERID,
+		r.REMARK,r.STATUS,r.TIMERECORDED,r.TYPE,r.USERID,u.U_NAME,u.MOBILE
+		from TB_PLAT_FUND_RECORD r left join TB_USER u on r.USERID=u.ID
+		where 1=1
+			<if test="params.containsKey('userId') and params.userId!=''">and r.USERID=#{params.userId}</if>
+			<if test="params.containsKey('type') and params.type!=''">and r.TYPE=#{params.type}</if>
+			<if test="startTime !=null">and r.TIMERECORDED &gt;=#{startTime}</if>
+			<if test="endTime !=null">and r.TIMERECORDED &lt;=#{endTime}</if>
+		order by r.TIMERECORDED DESC
+	</select>
+	
+	<select id="selectByParams" parameterType="com.zhongyang.java.zyfyback.pojo.PlatFundRecord" resultMap="rm">
+		select
+			<include refid="sqlfile"/>
+		from TB_PALT_FUND_RECORD where 1=1
+			<if test="orderId !=null">and ORDERID=#{orderId}</if>
+			<if test="status !=null">and STATUS=#{status}</if>
+	</select>
+	
+	<insert id="batchInsertRecords" parameterType="java.util.List">
+		insert into TB_PLAT_FUND_RECORD(ID,ACCOUNT,AMOUNT,DESCRIPTION,OPERATION,
+		ORDERID,REMARK,STATUS,TIMERECORDED,TYPE,USERID)values
+		<foreach collection="list" item="item" index="index" separator=",">
+			(#{item.id},#{item.account},#{item.amount},
+			#{item.description},#{item.operation},#{item.orderId},#{item.remark},
+			#{item.status},#{item.timeRecorded},#{item.type},#{item.userId})
+  		</foreach>
+	</insert>
+</mapper>

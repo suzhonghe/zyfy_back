@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace='com.zhongyang.java.dao.LoanRepaymentDao'>
+	<resultMap type="com.zhongyang.java.zyfyback.pojo.LoanRepayment"
+		id="rm">
+		<id column="ID" property="id" />
+		<result column="CURRENTPERIOD" property="currentPeriod" />
+		<result column="REPAYAMOUNT" property="repayAmount" />
+		<result column="REPAYDATE" property="repayDate" />
+		<result column="STATUS" property="status" />
+		<result column="SOURCE_ID" property="sourceId" />
+		<result column="AMOUNTINTEREST" property="amountInterest" />
+		<result column="AMOUNTOUTSTANDING" property="amountOutStanding" />
+		<result column="AMOUNTPRINCIPAL" property="amountPrincipal" />
+		<result column="DUEDATE" property="dueDate" />
+		<result column="LOAN_ID" property="loanId" />
+		<result column="ISREPAY" property="isRepay"/>
+	</resultMap>
+	<sql id="sqlfile">
+		ID,CURRENTPERIOD,REPAYAMOUNT,REPAYDATE,STATUS,SOURCE_ID,AMOUNTINTEREST,AMOUNTOUTSTANDING,
+		AMOUNTPRINCIPAL,DUEDATE,LOAN_ID,ISREPAY
+	</sql>
+	<select id="selectLoanRepaymentsByParams" parameterType="com.zhongyang.java.zyfyback.pojo.LoanRepayment"
+		resultMap="rm">
+		select
+			<include refid="sqlfile"/>
+		from TB_LOAN_REPAYMENT where 1=1
+			<if test="loanId!=null">and LOAN_ID=#{loanId}</if>
+			<if test="currentPeriod !=null">and CURRENTPERIOD=#{currentPeriod}</if>
+			<if test="status !=null">and STATUS=#{status}</if>
+			<if test="id !=null">and ID=#{id}</if>
+		order by CURRENTPERIOD ASC	
+		
+	</select>
+	<insert id="batchInsertLoanRepayment" parameterType="java.util.List">
+		insert into TB_LOAN_REPAYMENT(ID,CURRENTPERIOD,STATUS,AMOUNTINTEREST,AMOUNTOUTSTANDING,
+		AMOUNTPRINCIPAL,DUEDATE,LOAN_ID,ISREPAY)values
+		<foreach collection="list" item="item" index="index" separator=",">
+			(#{item.id},#{item.currentPeriod},#{item.status},#{item.amountInterest},
+			#{item.amountOutStanding},#{item.amountPrincipal},#{item.dueDate},#{item.loanId},#{item.isRepay})
+  		</foreach>
+	</insert>
+	
+	<update id="updateLoanRepayment" parameterType="com.zhongyang.java.zyfyback.pojo.LoanRepayment">
+		update TB_LOAN_REPAYMENT
+			<set>
+				<if test="isRepay !=null">ISREPAY=#{isRepay},</if>
+				<if test="status !=null"> STATUS=#{status},</if>
+				<if test="repayAmount !=null"> REPAYAMOUNT=#{repayAmount},</if>
+				<if test="repayDate !=null"> REPAYDATE=#{repayDate},</if>
+			</set>
+			where 1=1
+			<if test="loanId !=null">and LOAN_ID=#{loanId}</if>
+			<if test="currentPeriod !=null">and CURRENTPERIOD=#{currentPeriod}</if>
+			<if test="id !=null">and ID=#{id}</if>
+	</update>
+	
+	
+	<resultMap type="com.zhongyang.java.zyfyback.returndata.LoanRepayDetail" id="pageRepay">
+		<id column="ID" property="id"/>
+		<result column="DUEDATE" property="dueDate"/>
+		<result column="TITLE" property="title"/>
+		<result column="CURRENTPERIOD" property="currentPeriod"/>
+		<result column="U_NAME" property="userName"/>
+		<result column="AMOUNTINTEREST" property="amountInterest"/>
+		<result column="AMOUNTPRINCIPAL" property="amountPrincipal"/>
+		<result column="LOAN_AMOUNT" property="account_aviamount"/>
+		<result column="LR_STATUS" property="status"/>
+		<result column="ISREPAY" property="isRepay"/>
+		<result column="REPAYDATE" property="repayDate"/>
+		<result column="LOAN_ID" property="loanId"/>
+	</resultMap>
+    
+    <select id="selectLoanReoaymentByPage" parameterType="com.zhongyang.java.system.page.Page" resultMap="pageRepay">
+    	select r.ID,DATE_FORMAT(r.DUEDATE,'%Y-%m-%d')DUEDATE,l.TITLE,r.CURRENTPERIOD,u.U_NAME,r.AMOUNTINTEREST,r.AMOUNTPRINCIPAL,
+    	t.AMOUNT LOAN_AMOUNT,r.STATUS LR_STATUS,r.ISREPAY,DATE_FORMAT(r.REPAYDATE,'%Y-%m-%d %H:%m:%i') REPAYDATE,r.LOAN_ID
+    	from TB_LOAN_REPAYMENT r 
+    	left join TB_LOAN l on r.LOAN_ID=l.ID
+    	left join TB_USER u on l.LOANUSERID=u.ID
+    	left join TB_LOAN_TENDER t on l.ID=t.LOAN_ID
+    	where 1=1
+    	<if test="strStartTime !=null and strStartTime !=''">
+    		and r.DUEDATE &gt;=#{strStartTime}
+    	</if>
+    	<if test="strEndTime !=null and strEndTime !=''">
+    		and r.DUEDATE &lt;=#{strEndTime}
+    	</if>
+    	<if test="strStartTime=='' and strEndTime=='' and params.status =='UNDUE'">
+    		and r.DUEDATE =DATE_FORMAT(NOW(),'%Y-%m-%d')
+    	</if>
+    	<if test="params.containsKey('mobile') and params.mobile !='' and params.mobile !=null">
+    		and u.MOBILE=#{params.mobile}
+    	</if>
+    	<if test="params.containsKey('userName') and params.userName !='' and params.userName !=null">
+    		and u.U_NAME=#{params.userName}
+    	</if>
+    	<if test="params.containsKey('status') and params.status !='CLEARED'">
+    		and r.STATUS=#{params.status}
+    		order by r.DUEDATE ASC
+    	</if>
+    	<if test="params.containsKey('status') and params.status =='CLEARED'">
+    		and r.STATUS in ('REPAYED','PREPAY')
+    		order by r.DUEDATE DESC
+    	</if>
+    	
+    </select>
+    
+    <update id="updateStatusByTime" parameterType="java.lang.String">
+		update TB_LOAN_REPAYMENT set `STATUS`=#{status} 
+		where DATE(DUEDATE)=date_sub(curdate(),interval 1 day) 
+		and REPAYDATE is null and `STATUS` ='UNDUE'
+	</update>
+</mapper>

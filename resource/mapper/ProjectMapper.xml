@@ -1,0 +1,175 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace='com.zhongyang.java.dao.ProjectDao'>
+	<resultMap type="com.zhongyang.java.zyfyback.pojo.Project" id="rm">
+		<id column="ID" property="id"/>
+		<result column="AMOUNT" property="amount"/>
+		<result column="AUTOABLE" property="autoable"/>
+		<result column="DESCRIPTION" property="description"/>
+		<result column="HIDDEN" property="hidden"/>
+		<result column="METHOD" property="method"/>
+		<result column="PRODUCTID" property="productId"/>
+		<result column="RATE" property="rate"/>
+		<result column="RISKINFO" property="riskInfo"/>
+		<result column="SERIAL" property="serial"/>
+		<result column="P_STATUS" property="status"/>
+		<result column="TIMESUBMIT" property="timeSubmit"/>
+		<result column="TITLE" property="title"/>
+		<result column="DAYS" property="days"/>
+		<result column="MONTHS" property="months"/>
+		<result column="YEARS" property="years"/>
+		<result column="GUARANTEE_ID" property="guaranteeId"/>
+		<result column="GUARANTEE_REALM" property="guaranteeRealm"/>
+		<result column="MAXAMOUNT" property="maxAmount"/>
+		<result column="MINAMOUNT" property="minAmount"/>
+		<result column="STEPAMOUNT" property="stepAmount"/>
+		<result column="INVESTINTERESTFEE" property="investInterestFee"/>
+		<result column="LOANGUARANTEEFEE" property="loanGuaranteeFee"/>
+		<result column="LOANINTERESTFEE" property="loanInterestFee"/>
+		<result column="LOANMANAGEFEE" property="loanManageFee"/>
+		<result column="LOANRISKFEE" property="loanRiskFee"/>
+		<result column="LOANSERVICEFEE" property="loanServiceFee"/>
+		<result column="SURPLUSAMOUNT" property="surplusAmount"/>
+		<result column="PUBLISEDAMOUNT" property="publishedAmount"/>
+		<result column="OPERATIONRANGE" property="operationRange"/>
+		<result column="REPAYSOURCE" property="repaySource"/>
+		<result column="FIRMINFO" property="firmInfo"/>
+		<result column="LOANUSERID" property="loanUserId"/>
+		<result column="LEGALPERSON" property="legalPerson"/>
+		<result column="AGENTPERSON" property="agentPerson"/>	
+		<result column="U_NAME" property="name"/>
+		<result column="P_NAME" property="productName"/>
+		<result column="COMENTSATEUSERID" property="comentSateUserId"/>
+	</resultMap>
+	
+	<sql id="sqlfield">
+		ID,AMOUNT,AUTOABLE,DESCRIPTION,HIDDEN,METHOD,PRODUCTID,RATE,RISKINFO,SERIAL,P_STATUS,
+		TIMESUBMIT,TITLE,DAYS,MONTHS,YEARS,GUARANTEE_ID,GUARANTEE_REALM,MAXAMOUNT,MINAMOUNT,
+		STEPAMOUNT,INVESTINTERESTFEE,LOANGUARANTEEFEE,LOANINTERESTFEE,LOANMANAGEFEE,
+		LOANRISKFEE,LOANSERVICEFEE,SURPLUSAMOUNT,PUBLISEDAMOUNT,OPERATIONRANGE,REPAYSOURCE,
+		FIRMINFO,LOANUSERID,LEGALPERSON,AGENTPERSON,COMENTSATEUSERID
+		
+	</sql>
+	
+	<insert id="insertProject" parameterType="com.zhongyang.java.zyfyback.pojo.Project">
+		insert into TB_LOANREQUEST(ID,AMOUNT,AUTOABLE,DESCRIPTION,
+		HIDDEN ,METHOD,PRODUCTID,RATE,RISKINFO,SERIAL,
+		P_STATUS,TIMESUBMIT,TITLE,DAYS,MONTHS,YEARS,GUARANTEE_ID,GUARANTEE_REALM,MAXAMOUNT,
+		MINAMOUNT,STEPAMOUNT,INVESTINTERESTFEE,LOANGUARANTEEFEE,
+		LOANINTERESTFEE,LOANMANAGEFEE,LOANRISKFEE,LOANSERVICEFEE,SURPLUSAMOUNT,PUBLISEDAMOUNT,
+		OPERATIONRANGE,REPAYSOURCE,FIRMINFO,LOANUSERID,LEGALPERSON,AGENTPERSON,COMENTSATEUSERID)
+		values(#{id},#{amount},#{autoable},#{description},#{hidden},#{method},#{productId},
+		#{rate},#{riskInfo},#{serial},#{status},#{timeSubmit},#{title},#{days},#{months},
+		#{years},#{guaranteeId},#{guaranteeRealm},#{maxAmount},
+		#{minAmount},#{stepAmount},#{investInterestFee},#{loanGuaranteeFee},#{loanInterestFee},
+		#{loanManageFee},#{loanRiskFee},#{loanServiceFee},#{surplusAmount},#{publishedAmount},
+		#{operationRange},#{repaySource},#{firmInfo},#{loanUserId},#{legalPerson},#{agentPerson},#{comentSateUserId})
+	</insert>
+	<select id="selectProjectByParams" parameterType="com.zhongyang.java.zyfyback.pojo.Project" resultMap="rm">
+		select
+		<include refid="sqlfield"/>
+			from TB_LOANREQUEST where 1=1
+			and ID=#{id}
+	</select>
+	<update id="updateProjectByParams" parameterType="com.zhongyang.java.zyfyback.pojo.Project">
+		update TB_LOANREQUEST
+			<set>
+				<if test="amount!=null">AMOUNT=#{amount},</if>
+				<if test="autoable!=null">AUTOABLE=#{autoable},</if>
+				<if test="description!=null">DESCRIPTION=#{description},</if>
+				<if test="hidden!=null">HIDDEN=#{hidden},</if>
+				<if test="method!=null">METHOD=#{method},</if>
+				<if test="productId!=null">PRODUCTID=#{productId},</if>
+				<if test="rate!=null">RATE=#{rate},</if>
+				<if test="riskInfo!=null">RISKINFO=#{riskInfo},</if>
+				<if test="serial!=null">SERIAL=#{serial},</if>
+				<if test="status!=null">P_STATUS=#{status},</if>
+				<if test="title!=null">TITLE=#{title},</if>
+				<if test="days!=null">DAYS=#{days},</if>
+				<if test="months!=null">MONTHS=#{months},</if>
+				<if test="years!=null">YEARS=#{years},</if>
+				<if test="guaranteeId!=null">GUARANTEE_ID=#{guaranteeId},</if>
+				<if test="maxAmount!=null">GUARANTEE_REALM=#{guaranteeRealm},</if>
+				<if test="guaranteeId!=null">MAXAMOUNT=#{maxAmount},</if>
+				<if test="minAmount!=null">MINAMOUNT=#{minAmount},</if>
+				<if test="stepAmount!=null">STEPAMOUNT=#{stepAmount},</if>
+				<if test="investInterestFee!=null">INVESTINTERESTFEE=#{investInterestFee},</if>
+				<if test="loanGuaranteeFee!=null">LOANGUARANTEEFEE=#{loanGuaranteeFee},</if>
+				<if test="loanInterestFee!=null">LOANINTERESTFEE=#{loanInterestFee},</if>
+				<if test="loanManageFee!=null">LOANMANAGEFEE=#{loanManageFee},</if>
+				<if test="loanRiskFee!=null">LOANRISKFEE=#{loanRiskFee},</if>
+				<if test="loanServiceFee!=null">LOANSERVICEFEE=#{loanServiceFee},</if>
+				<if test="surplusAmount!=null">SURPLUSAMOUNT=#{surplusAmount},</if>
+				<if test="publishedAmount!=null">PUBLISEDAMOUNT=#{publishedAmount},</if>
+				<if test="operationRange!=null">OPERATIONRANGE=#{operationRange},</if>
+				<if test="repaySource!=null">REPAYSOURCE=#{repaySource},</if>
+				<if test="firmInfo!=null">FIRMINFO=#{firmInfo},</if>
+				<if test="loanUserId!=null">LOANUSERID=#{loanUserId},</if>
+				<if test="legalPerson!=null">LEGALPERSON=#{legalPerson},</if>
+				<if test="agentPerson!=null">AGENTPERSON=#{agentPerson},</if>
+				<if test="comentSateUserId !=null">COMENTSATEUSERID=#{comentSateUserId},</if>
+			</set>
+		where ID=#{id}
+	</update>
+	<update id="failedLoanUpdatePaoject" parameterType="com.zhongyang.java.zyfyback.pojo.Project">
+		update TB_LOANREQUEST
+			<set>
+				<if test="publishedAmount !=null">PUBLISEDAMOUNT=PUBLISEDAMOUNT+#{publishedAmount},</if>
+				<if test="surplusAmount !=null ">SURPLUSAMOUNT=SURPLUSAMOUNT+#{surplusAmount},</if>
+			</set>
+		where ID=#{id}
+	</update>
+	<select id="selectAllProjects" parameterType="com.zhongyang.java.system.page.Page" resultMap="rodDea">
+		select
+		 l.ID id,l.AMOUNT,l.AUTOABLE,l.DESCRIPTION,
+			l.HIDDEN,l.METHOD,l.PRODUCTID,l.RATE,
+			l.RISKINFO,l.SERIAL,l.P_STATUS,l.TIMESUBMIT,l.TITLE,l.DAYS,l.MONTHS,
+			l.YEARS,l.GUARANTEE_ID,l.GUARANTEE_REALM,l.MAXAMOUNT,l.COMENTSATEUSERID,
+			l.MINAMOUNT,l.STEPAMOUNT,l.INVESTINTERESTFEE,l.LOANGUARANTEEFEE,
+			l.LOANINTERESTFEE,l.LOANMANAGEFEE,l.LOANRISKFEE,l.LOANSERVICEFEE,l.SURPLUSAMOUNT,
+			l.PUBLISEDAMOUNT,l.OPERATIONRANGE,l.REPAYSOURCE,l.FIRMINFO,l.LOANUSERID,
+			l.LEGALPERSON,l.AGENTPERSON,u.U_NAME,p.NAME P_NAME
+		 from TB_LOANREQUEST l left join TB_PRODUCT p on l.PRODUCTID=p.ID left join TB_USER u on l.LOANUSERID=u.ID where 1=1
+			order by l.TIMESUBMIT DESC
+	</select>
+	<resultMap type="com.zhongyang.java.zyfyback.returndata.ProjectDea" id="rodDea">
+		<id column="ID" property="id"/>
+		<result column="AMOUNT" property="amount"/>
+		<result column="AUTOABLE" property="autoable"/>
+		<result column="DESCRIPTION" property="description"/>
+		<result column="HIDDEN" property="hidden"/>
+		<result column="METHOD" property="method"/>
+		<result column="PRODUCTID" property="productId"/>
+		<result column="RATE" property="rate"/>
+		<result column="RISKINFO" property="riskInfo"/>
+		<result column="SERIAL" property="serial"/>
+		<result column="P_STATUS" property="status"/>
+		<result column="TIMESUBMIT" property="timeSubmit"/>
+		<result column="TITLE" property="title"/>
+		<result column="DAYS" property="days"/>
+		<result column="MONTHS" property="months"/>
+		<result column="YEARS" property="years"/>
+		<result column="GUARANTEE_ID" property="guaranteeId"/>
+		<result column="GUARANTEE_REALM" property="guaranteeRealm"/>
+		<result column="MAXAMOUNT" property="maxAmount"/>
+		<result column="MINAMOUNT" property="minAmount"/>
+		<result column="STEPAMOUNT" property="stepAmount"/>
+		<result column="INVESTINTERESTFEE" property="investInterestFee"/>
+		<result column="LOANGUARANTEEFEE" property="loanGuaranteeFee"/>
+		<result column="LOANINTERESTFEE" property="loanInterestFee"/>
+		<result column="LOANMANAGEFEE" property="loanManageFee"/>
+		<result column="LOANRISKFEE" property="loanRiskFee"/>
+		<result column="LOANSERVICEFEE" property="loanServiceFee"/>
+		<result column="SURPLUSAMOUNT" property="surplusAmount"/>
+		<result column="PUBLISEDAMOUNT" property="publishedAmount"/>
+		<result column="OPERATIONRANGE" property="operationRange"/>
+		<result column="REPAYSOURCE" property="repaySource"/>
+		<result column="FIRMINFO" property="firmInfo"/>
+		<result column="LOANUSERID" property="loanUserId"/>
+		<result column="LEGALPERSON" property="legalPerson"/>
+		<result column="AGENTPERSON" property="agentPerson"/>	
+		<result column="U_NAME" property="name"/>
+		<result column="P_NAME" property="productName"/>
+		<result column="COMENTSATEUSERID" property="comentSateUserId"/>
+	</resultMap>
+</mapper>
